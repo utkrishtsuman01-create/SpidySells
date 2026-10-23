@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { ArrowLeft, ArrowRight, ChefHat, MapPin, Minus, Plus, ShoppingBag, Clock3, Check, X, Package, Store, ChartNoAxesCombined, Settings, LogOut, RefreshCw, Pencil, Trash2, LockKeyhole, ExternalLink } from 'lucide-react';
 
