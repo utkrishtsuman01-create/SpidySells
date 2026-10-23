@@ -15,14 +15,14 @@ const pretty = s => String(s||'').replaceAll('_',' ').replace(/\\b\\w/g,c=>c.toU
 
 export default function App(){
  const [page,setPage]=useState('location'),[kind,setKind]=useState('pickup'),[cart,setCart]=useState([]),[customer,setCustomer]=useState(emptyCustomer),[notice,setNotice]=useState(''),[busy,setBusy]=useState(false),[orderRef,setOrderRef]=useState('');
- const [products,setProducts]=useState([seedProduct]),[branches,setBranches]=useState([]),[settings,setSettings]=useState(defaultSettings),[selectedBranch,setSelectedBranch]=useState(''),[session,setSession]=useState(null),[tab,setTab]=useState('orders'),[orders,setOrders]=useState([]),[editingProduct,setEditingProduct]=useState(null),[editingBranch,setEditingBranch]=useState(null),[resetText,setResetText]=useState(''),[passwords,setPasswords]=useState({next:'',confirm:''}),[dashboardLoading,setDashboardLoading]=useState(false);
+ const [products,setProducts]=useState([]),[branches,setBranches]=useState([]),[settings,setSettings]=useState(defaultSettings),[selectedBranch,setSelectedBranch]=useState(''),[session,setSession]=useState(null),[tab,setTab]=useState('orders'),[orders,setOrders]=useState([]),[editingProduct,setEditingProduct]=useState(null),[editingBranch,setEditingBranch]=useState(null),[resetText,setResetText]=useState(''),[passwords,setPasswords]=useState({next:'',confirm:''}),[dashboardLoading,setDashboardLoading]=useState(false);
  const total=useMemo(()=>cart.reduce((s,i)=>s+Number(i.price)*i.qty,0),[cart]);
  const deliveryFee=kind==='delivery'&&settings.delivery_enabled?Number(settings.delivery_charge||0):0;
  useEffect(()=>{if(!supabase)return;refreshPublic();supabase.auth.getSession().then(({data})=>{setSession(data.session);if(data.session)loadAdminData()});const {data:{subscription}}=supabase.auth.onAuthStateChange((_e,s)=>{setSession(s);if(s){setPage('admin');loadAdminData()}else if(page==='admin')setPage('location')});return()=>subscription.unsubscribe()},[]);
  async function refreshPublic(){
   if(!supabase)return;
   const [pr,br,se]=await Promise.all([supabase.from('products').select('*').eq('published',true).eq('available',true).order('created_at'),supabase.from('branches').select('*').eq('active',true).order('name'),supabase.from('business_settings').select('*').limit(1).maybeSingle()]);
-  if(!pr.error&&pr.data?.length)setProducts(pr.data);else if(pr.error)setNotice('Menu database is not ready. Apply the Supabase migrations in README.');
+  if(!pr.error)setProducts(pr.data||[]);else setNotice('Menu database is not ready. Apply the Supabase migrations in README.');
   if(!br.error)setBranches(br.data||[]);
   if(!se.error&&se.data)setSettings({...defaultSettings,...se.data});
  }
@@ -30,7 +30,7 @@ export default function App(){
   if(!supabase)return;setDashboardLoading(true);
   const [o,p,b,s]=await Promise.all([supabase.from('orders').select('*,branches(name),order_items(*)').order('created_at',{ascending:false}).limit(500),supabase.from('products').select('*').order('created_at',{ascending:false}),supabase.from('branches').select('*').order('created_at',{ascending:false}),supabase.from('business_settings').select('*').limit(1).maybeSingle()]);
   if(o.error)setNotice('Orders: '+o.error.message);else setOrders(o.data||[]);
-  if(!p.error)setProducts(p.data?.length?p.data:[seedProduct]);
+  if(!p.error)setProducts(p.data||[]);
   if(!b.error)setBranches(b.data||[]);
   if(!s.error&&s.data)setSettings({...defaultSettings,...s.data});
   setDashboardLoading(false);
