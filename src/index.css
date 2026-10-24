@@ -39,3 +39,10 @@
 .order-confirmation .sumline b{font-size:11px;font-weight:700;text-align:right}
 .order-confirmation>small{display:block;color:var(--muted);font-size:10px;line-height:1.7;margin-top:14px}
 @media(max-width:600px){.home-active-order{padding:18px 16px}.active-order-heading h2{font-size:18px}.active-order-bottom>b{font-size:18px}}
+
+/* Google Maps distance quote */
+.delivery-quote{display:grid;gap:10px;border:1px solid #e1d4c0;background:#fffdf9;padding:14px 16px;margin-top:-7px;color:var(--brown)}
+.delivery-quote>div{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:12px}
+.delivery-quote>div b{font-size:13px}
+.delivery-quote>small{display:block;font-size:10px;line-height:1.7;color:var(--muted)}
+.delivery-quote>small.quote-error{color:#9b3d2b}
