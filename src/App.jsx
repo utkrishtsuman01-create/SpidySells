@@ -12,9 +12,11 @@ const emptyCustomer = {name:'',phone:'',address:'',notes:''};
 const defaultSettings = {business_name:'Spidy Sells',whatsapp_number:'',currency:'INR',delivery_enabled:false,delivery_charge:0,pickup_instructions:''};
 const statusOptions = ['pending','confirmed','preparing','ready_for_pickup','out_for_delivery','completed','cancelled','not_converted','whatsapp_initiated'];
 const pretty = s => String(s||'').replaceAll('_',' ').replace(/\b\w/g,c=>c.toUpperCase());
+const routeToPage = {'/':'location','/order-type':'type','/menu':'menu','/bag':'cart','/checkout':'checkout','/order-confirmation':'success','/admin':'owner'};
+const pageToRoute = {location:'/',type:'/order-type',menu:'/menu',cart:'/bag',checkout:'/checkout',success:'/order-confirmation',owner:'/admin',admin:'/admin'};
 
 export default function App(){
- const [page,setPage]=useState(()=>{const path=window.location.pathname.replace(/\/+$/,'')||'/';return path==='/admin'?'owner':path==='/'?'location':'not-found'}),[kind,setKind]=useState('pickup'),[cart,setCart]=useState([]),[customer,setCustomer]=useState(emptyCustomer),[notice,setNotice]=useState(''),[busy,setBusy]=useState(false),[orderRef,setOrderRef]=useState(''),[paymentMethod,setPaymentMethod]=useState('cash_on_pickup'),[orderDetails,setOrderDetails]=useState(null),[activeOrder,setActiveOrder]=useState(()=>{try{return JSON.parse(window.localStorage.getItem('spidy_active_order')||'null')}catch{return null}});
+ const [page,setPage]=useState(()=>{const path=window.location.pathname.replace(/\/+$/,'')||'/';return routeToPage[path]||(path==='/admin'?'owner':'not-found')}),[kind,setKind]=useState('pickup'),[cart,setCart]=useState([]),[customer,setCustomer]=useState(emptyCustomer),[notice,setNotice]=useState(''),[busy,setBusy]=useState(false),[orderRef,setOrderRef]=useState(''),[paymentMethod,setPaymentMethod]=useState('cash_on_pickup'),[orderDetails,setOrderDetails]=useState(null),[activeOrder,setActiveOrder]=useState(()=>{try{return JSON.parse(window.localStorage.getItem('spidy_active_order')||'null')}catch{return null}});
  const [products,setProducts]=useState([]),[branches,setBranches]=useState([]),[settings,setSettings]=useState(defaultSettings),[selectedBranch,setSelectedBranch]=useState(''),[session,setSession]=useState(null),[tab,setTab]=useState('orders'),[orders,setOrders]=useState([]),[editingProduct,setEditingProduct]=useState(null),[editingBranch,setEditingBranch]=useState(null),[resetText,setResetText]=useState(''),[passwords,setPasswords]=useState({next:'',confirm:''}),[dashboardLoading,setDashboardLoading]=useState(false),[deliveryQuote,setDeliveryQuote]=useState(null),[quoteBusy,setQuoteBusy]=useState(false),[quoteError,setQuoteError]=useState(''),[deliveryLookupRequested,setDeliveryLookupRequested]=useState(false);
  const [customerOrderHistory,setCustomerOrderHistory]=useState([]),[customerHistoryLoading,setCustomerHistoryLoading]=useState(false),[customerHistorySearched,setCustomerHistorySearched]=useState(false),[customerHistoryMessage,setCustomerHistoryMessage]=useState('');
  const [historyReference,setHistoryReference]=useState(()=>{try{return JSON.parse(window.localStorage.getItem('spidy_active_order')||'null')?.order_reference||''}catch{return ''}});
@@ -37,20 +39,21 @@ export default function App(){
   };
   const current=metadata[page]||metadata.location;
   const origin='https://spidysells.com';
+  const route=pageToRoute[page]||null;
   document.title=current.title;
   const setMeta=(selector,attr,value,content)=>{let node=document.head.querySelector(selector);if(!node){node=document.createElement('meta');node.setAttribute(attr,value);document.head.appendChild(node)}node.setAttribute('content',content)};
   setMeta('meta[name="description"]','name','description',current.description);
-  const privateView=page!=='location';
-  setMeta('meta[name="robots"]','name','robots',privateView?'noindex,nofollow':'index,follow,max-image-preview:large');
+  const indexablePage=['location','menu'].includes(page);
+  setMeta('meta[name="robots"]','name','robots',indexablePage?'index,follow,max-image-preview:large':'noindex,nofollow');
   setMeta('meta[property="og:title"]','property','og:title',current.title);
   setMeta('meta[property="og:description"]','property','og:description',current.description);
-  setMeta('meta[property="og:url"]','property','og:url',page==='owner'||page==='admin'?origin+'/admin':origin+'/');
+  setMeta('meta[property="og:url"]','property','og:url',route?origin+route:origin+'/');
   setMeta('meta[property="og:image"]','property','og:image',origin+'/og-spidy-sells.svg');
   setMeta('meta[property="og:image:alt"]','property','og:image:alt','Spidy Sells tiramisu and dessert ordering in Kolkata and Howrah');
   setMeta('meta[name="twitter:title"]','name','twitter:title',current.title);
   setMeta('meta[name="twitter:description"]','name','twitter:description',current.description);
   const canonical=document.head.querySelector('link[rel="canonical"]');
-  if(page==='not-found'){canonical?.remove()}else if(canonical){canonical.href=page==='owner'||page==='admin'?origin+'/admin':origin+'/'}else{const link=document.createElement('link');link.rel='canonical';link.href=page==='owner'||page==='admin'?origin+'/admin':origin+'/';document.head.appendChild(link)}
+  if(!route){canonical?.remove()}else if(canonical){canonical.href=origin+route}else{const link=document.createElement('link');link.rel='canonical';link.href=origin+route;document.head.appendChild(link)}
  },[page]);
  useEffect(()=>{
   const active=branches.filter(branch=>branch.active&&branch.name&&branch.address);
@@ -70,8 +73,8 @@ export default function App(){
   node.textContent=JSON.stringify({'@context':'https://schema.org','@graph':businesses});
  },[branches,settings.business_name]);
 
- useEffect(()=>{const path=window.location.pathname.replace(/\/+$/,'')||'/';const adminPath=path==='/admin';if(page==='owner'||page==='admin'){if(!adminPath)window.history.pushState({},'', '/admin')}else if(page!=='not-found'&&path!=='/'){window.history.pushState({},'', '/') }},[page]);
- useEffect(()=>{const onPopState=()=>{const path=window.location.pathname.replace(/\/+$/,'')||'/';setPage(path==='/admin'?(session?'admin':'owner'):path==='/'?'location':'not-found')};window.addEventListener('popstate',onPopState);return()=>window.removeEventListener('popstate',onPopState)},[session]);
+ useEffect(()=>{const target=pageToRoute[page];if(target&&window.location.pathname!==target)window.history.pushState({},'',target)},[page]);
+ useEffect(()=>{const onPopState=()=>{const path=window.location.pathname.replace(/\/+$/,'')||'/';setPage(path==='/admin'?(session?'admin':'owner'):(routeToPage[path]||'not-found'))};window.addEventListener('popstate',onPopState);return()=>window.removeEventListener('popstate',onPopState)},[session]);
  useEffect(()=>{
   if(page!=='checkout'||kind!=='delivery'){
    setQuoteBusy(false);setQuoteError('');setDeliveryQuote(null);setDeliveryLookupRequested(false);return;
