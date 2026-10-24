@@ -40,7 +40,7 @@ export default function App(){
    'not-found':{title:'Page Not Found | Spidy Sells',description:'This Spidy Sells page could not be found. Return to the store homepage to continue.'}
   };
   const current=metadata[page]||metadata.location;
-  const origin='https://spidysells.com';
+  const origin='https://spidy-sells.vercel.app';
   const route=pageToRoute[page]||null;
   document.title=current.title;
   const setMeta=(selector,attr,value,content)=>{let node=document.head.querySelector(selector);if(!node){node=document.createElement('meta');node.setAttribute(attr,value);document.head.appendChild(node)}node.setAttribute('content',content)};
@@ -61,7 +61,7 @@ export default function App(){
   const active=branches.filter(branch=>branch.active&&branch.name&&branch.address);
   const node=document.getElementById('spidy-structured-data');
   if(!node)return;
-  const origin='https://spidysells.com';
+  const origin='https://spidy-sells.vercel.app';
   const organization={'@type':'Organization','@id':origin+'/#organization','name':settings.business_name||'Spidy Sells','url':origin+'/', 'description':'Tiramisu and dessert ordering in Kolkata and Howrah, India.','logo':{'@type':'ImageObject','url':origin+'/favicon.svg'},'image':origin+'/og-spidy-sells.svg','areaServed':[{'@type':'City','name':'Kolkata'},{'@type':'City','name':'Howrah'}]};
   const website={'@type':'WebSite','@id':origin+'/#website','url':origin+'/','name':settings.business_name||'Spidy Sells','publisher':{'@id':origin+'/#organization'},'inLanguage':'en-IN'};
   const businesses=active.map((branch,index)=>{
