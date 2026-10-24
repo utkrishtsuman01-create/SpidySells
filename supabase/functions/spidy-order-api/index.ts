@@ -1,7 +1,8 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
-const GEOAPIFY_API_KEY = Deno.env.get("GEOAPIFY_API_KEY") ?? "";
+const GEOAPIFY_API_KEY_RAW = Deno.env.get("GEOAPIFY_API_KEY") ?? "";
+const GEOAPIFY_API_KEY = GEOAPIFY_API_KEY_RAW.trim();
 
 function getServiceRoleKey(): string {
   const legacy = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
@@ -97,7 +98,12 @@ async function geocodeAddress(address: string, bias?: { lat: number; lon: number
     const details = typeof payload?.message === "string" ? payload.message : `HTTP ${response.status}`;
     console.error("Geoapify geocoding failed", response.status, details);
     if (response.status === 401) {
-      throw new Error("Delivery distance setup issue: Geoapify rejected the API key. The store owner must replace GEOAPIFY_API_KEY in Supabase Secrets with the raw API key from the Geoapify dashboard (not the project ID or a full URL).");
+      console.error("Geoapify auth diagnostics (key value omitted)", {
+        configured: GEOAPIFY_API_KEY.length > 0,
+        length: GEOAPIFY_API_KEY.length,
+        surroundingWhitespaceWasTrimmed: GEOAPIFY_API_KEY_RAW !== GEOAPIFY_API_KEY,
+      });
+      throw new Error("Geoapify rejected the server's configured API credential (401). This is not an address problem. The server has recorded safe diagnostics without exposing the key.");
     }
     if (response.status === 403) {
       throw new Error("Geoapify denied the geocoding request. Check the API key restrictions in the Geoapify dashboard.");
@@ -144,7 +150,12 @@ async function getQuote(branchId: string, address: string) {
     const details = typeof routePayload?.message === "string" ? routePayload.message : `HTTP ${routeResponse.status}`;
     console.error("Geoapify routing failed", routeResponse.status, details);
     if (routeResponse.status === 401) {
-      throw new Error("Delivery distance setup issue: Geoapify rejected the API key. The store owner must replace GEOAPIFY_API_KEY in Supabase Secrets with the raw API key from the Geoapify dashboard.");
+      console.error("Geoapify auth diagnostics (key value omitted)", {
+        configured: GEOAPIFY_API_KEY.length > 0,
+        length: GEOAPIFY_API_KEY.length,
+        surroundingWhitespaceWasTrimmed: GEOAPIFY_API_KEY_RAW !== GEOAPIFY_API_KEY,
+      });
+      throw new Error("Geoapify rejected the server's configured API credential (401). This is not an address problem. The server has recorded safe diagnostics without exposing the key.");
     }
     if (routeResponse.status === 403) {
       throw new Error("Geoapify denied the routing request. Check the API key restrictions in the Geoapify dashboard.");
