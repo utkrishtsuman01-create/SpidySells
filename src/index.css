@@ -48,3 +48,5 @@
 .delivery-quote>small.quote-error{color:#9b3d2b}
 
 .distance-help{font-size:10px;line-height:1.7;color:var(--muted);margin:-9px 0 0}
+
+.routing-attribution a{color:var(--brown);text-decoration:underline;text-underline-offset:2px}
