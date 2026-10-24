@@ -143,8 +143,8 @@
 @keyframes spider-skip-in{to{opacity:1}}
 @keyframes spider-intro-exit{to{opacity:0;visibility:hidden;pointer-events:none}}
 @media(max-width:600px){
- .spider-intro-crawler{width:62px;height:62px}
- .spider-intro-drop-thread{left:5.6%}
+ .spider-intro-crawler{width:62px;height:62px;left:calc(100% - 74px);top:calc(100% - 83px)}
+ .spider-intro-drop-thread{left:calc(3% + 31px)}
  .spider-intro-signature{top:calc(50% + min(31vmin,200px));font-size:8px;letter-spacing:2px}
  .spider-intro-skip{font-size:10px;padding:9px 11px}
 }
