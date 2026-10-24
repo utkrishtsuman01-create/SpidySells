@@ -21,3 +21,21 @@
 .payment-disabled{opacity:.6;cursor:not-allowed;background:#f7f2e9}
 .order-confirmation{margin-top:24px}
 .order-confirmation p{font-size:12px;line-height:1.8;color:var(--muted);margin:0}
+
+
+/* Customer order confirmation and active order tracker */
+.home-active-order{margin-top:26px;border:1px solid #ddcaa9;background:#fffdf8;padding:22px 24px;color:var(--brown)}
+.home-active-order .kicker{margin:0 0 12px;font-size:9px}
+.active-order-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.active-order-heading h2{font:600 21px 'Playfair Display',serif;margin:0}
+.order-status-pill{display:inline-flex;align-items:center;border:1px solid #d8c298;background:#f4ead7;color:#775329;padding:6px 10px;font-size:10px;text-transform:capitalize;letter-spacing:.2px}
+.home-active-order>p{font-size:12px;line-height:1.8;color:var(--muted);margin:13px 0}
+.active-order-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid var(--line);padding-top:13px}
+.active-order-bottom>b{font:600 20px 'Playfair Display',serif}
+.active-order-bottom button{display:inline-flex;align-items:center;gap:7px;border:0;background:transparent;color:var(--brown);font-weight:700;font-size:11px}
+.order-confirmation{margin-top:24px}
+.order-confirmation .sumline{align-items:flex-start}
+.order-confirmation .sumline>span:last-child{max-width:62%;text-align:right;overflow-wrap:anywhere}
+.order-confirmation .sumline b{font-size:11px;font-weight:700;text-align:right}
+.order-confirmation>small{display:block;color:var(--muted);font-size:10px;line-height:1.7;margin-top:14px}
+@media(max-width:600px){.home-active-order{padding:18px 16px}.active-order-heading h2{font-size:18px}.active-order-bottom>b{font-size:18px}}
