@@ -81,47 +81,23 @@ function deliveryFeeFromMeters(distanceMeters: number): number {
   return 90 + Math.ceil((distanceMeters - 20_000) / 1_000) * 3;
 }
 
-async function getQuote(branchId: string, address: string) {
+async function getQuote(branchId: string, address: string, distanceKm: number) {
   if (!SUPABASE_URL || !SERVICE_KEY) throw new Error("Server configuration is incomplete.");
-  if (!GOOGLE_MAPS_API_KEY) throw new Error("The Google Maps API key is missing from Supabase secrets.");
   if (!isUuid(branchId)) throw new Error("Please select a valid store location.");
   const cleanAddress = address.trim();
   if (cleanAddress.length < 10) throw new Error("Please enter the full address, including area and PIN code.");
   if (cleanAddress.length > 500) throw new Error("The delivery address is too long.");
+  if (!Number.isFinite(distanceKm) || distanceKm <= 0 || distanceKm > 300) {
+    throw new Error("Enter the driving distance shown in Google Maps, between 0.1 and 300 km.");
+  }
 
   const branch = await getBranch(branchId);
   if (!branch.delivery_enabled) throw new Error("Delivery is not available from this store location.");
   if (!(await deliveryAllowed())) throw new Error("Delivery is currently unavailable. Please choose takeaway.");
 
-  const response = await fetch("https://routes.googleapis.com/directions/v2:computeRoutes", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Goog-Api-Key": GOOGLE_MAPS_API_KEY,
-      "X-Goog-FieldMask": "routes.distanceMeters",
-    },
-    body: JSON.stringify({
-      origin: { address: branch.address },
-      destination: { address: cleanAddress },
-      travelMode: "DRIVE",
-      routingPreference: "TRAFFIC_UNAWARE",
-      languageCode: "en-IN",
-      units: "METRIC",
-    }),
-  });
-
-  if (!response.ok) {
-    // Don't return Google's response body because it can contain operational details.
-    console.error("Google Routes API returned status", response.status);
-    throw new Error("Google Maps could not calculate this route. Please check the address or try again later.");
-  }
-
-  const routeData = await response.json();
-  const distanceMeters = Number(routeData?.routes?.[0]?.distanceMeters);
-  if (!Number.isFinite(distanceMeters) || distanceMeters < 0) {
-    throw new Error("No driving route was found for that address. Please add a nearby landmark or PIN code.");
-  }
-
+  // No Google Routes API call is made. The customer enters the driving distance
+  // they can see in the regular Google Maps app, so no billing-enabled API key is needed.
+  const distanceMeters = Math.round(distanceKm * 1000);
   return {
     branchId: branch.id,
     branchName: branch.name,
@@ -147,8 +123,9 @@ Deno.serve(async (req: Request) => {
     try {
       const branchId = body.branchId;
       const address = body.address;
+      const distanceKm = Number(body.distanceKm);
       if (typeof address !== "string") throw new Error("Please enter your delivery address.");
-      const quote = await getQuote(String(branchId ?? ""), address);
+      const quote = await getQuote(String(branchId ?? ""), address, distanceKm);
       return json({
         ok: true,
         branchId: quote.branchId,
@@ -174,6 +151,7 @@ Deno.serve(async (req: Request) => {
     const name = typeof body.name === "string" ? body.name.trim() : "";
     const phone = typeof body.phone === "string" ? body.phone.trim() : "";
     const address = typeof body.address === "string" ? body.address.trim() : "";
+    const distanceKm = Number(body.distanceKm);
     const notes = typeof body.notes === "string" ? body.notes.trim().slice(0, 1000) : "";
     const items = body.items;
 
@@ -190,7 +168,7 @@ Deno.serve(async (req: Request) => {
       if (!branch.takeaway_enabled) throw new Error("Takeaway is not available at this location.");
     } else {
       if (!address) throw new Error("Please enter your full delivery address.");
-      quote = await getQuote(branchId, address);
+      quote = await getQuote(branchId, address, distanceKm);
     }
 
     const rpcParams = {
