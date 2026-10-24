@@ -22,7 +22,7 @@ function SpiderWelcomeIntro({onSkip}){
   return {x:500+Math.cos(angle)*382,y:500+Math.sin(angle)*382,index};
  });
  const rings=[48,84,122,162,204,248,292,336,378];
- return <div className="spider-intro" aria-label="Spidy Sells welcome animation">
+ return <div className="spider-intro" role="dialog" aria-modal="true" aria-label="Spidy Sells welcome animation">
   <div className="spider-intro-wash" aria-hidden="true"/>
   <svg className="spider-intro-web" viewBox="0 0 1000 1000" aria-hidden="true">
    <g className="spider-web-spokes">
@@ -82,7 +82,7 @@ function SpiderWelcomeIntro({onSkip}){
    <circle cx="54.5" cy="36" r="1" fill="#17110e"/>
   </svg>
   <div className="spider-intro-signature" aria-hidden="true">A LITTLE WEB OF HAPPINESS</div>
-  <button type="button" className="spider-intro-skip" onClick={onSkip}>Skip intro <ArrowRight size={15}/></button>
+  <button type="button" autoFocus className="spider-intro-skip" onClick={onSkip}>Skip intro <ArrowRight size={15}/></button>
  </div>;
 }
 
@@ -102,6 +102,12 @@ export default function App(){
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){finishIntro();return}
   const timer=window.setTimeout(finishIntro,6350);
   return()=>window.clearTimeout(timer);
+ },[introPlaying]);
+ useEffect(()=>{
+  if(!introPlaying)return;
+  const onKeyDown=event=>{if(event.key==='Escape')finishIntro()};
+  window.addEventListener('keydown',onKeyDown);
+  return()=>window.removeEventListener('keydown',onKeyDown);
  },[introPlaying]);
  useEffect(()=>{if(!supabase)return;refreshPublic();supabase.auth.getSession().then(({data})=>{setSession(data.session);if(data.session)loadAdminData()});const {data:{subscription}}=supabase.auth.onAuthStateChange((_e,s)=>{setSession(s);if(s){setPage('admin');loadAdminData()}else if(page==='admin')setPage('location')});return()=>subscription.unsubscribe()},[]);
  useEffect(()=>{
@@ -289,7 +295,7 @@ export default function App(){
   admin:[{label:'Home',target:'location'},{label:'Owner dashboard'}]
  };
  const breadcrumbs=breadcrumbMap[page]||[];
- return <div className="site"><div className="site-content" inert={introPlaying} aria-hidden={introPlaying || undefined}>
+ return <div className="site"><div className="site-content" inert={introPlaying ? '' : undefined} aria-hidden={introPlaying || undefined}>
  <header className="header"><a className="brand" href="/" onClick={e=>{e.preventDefault();setPage('location')}} aria-label="Spidy Sells home"><img className="brand-logo" src={spidySellsLogo} alt="Spidy Sells logo" /></a><div className="header-right">{['menu','cart','checkout'].includes(page)&&cart.length>0&&<button className="bag" onClick={()=>setPage('cart')}><ShoppingBag size={17}/> Bag <i>{cart.reduce((s,i)=>s+i.qty,0)}</i></button>}{page==='admin'&&<button className="owner" onClick={logout}><LogOut size={14} style={{verticalAlign:'middle'}}/> Log out</button>}</div></header>
  {notice&&<div className="notice" role="status">{notice}<button onClick={()=>setNotice('')} aria-label="Dismiss"><X size={15}/></button></div>}
  {breadcrumbs.length>0&&<nav className="breadcrumbs" aria-label="Breadcrumb"><ol>{breadcrumbs.map((crumb,index)=><li key={crumb.label} aria-current={index===breadcrumbs.length-1?'page':undefined}>{crumb.target?<a href={pageToRoute[crumb.target]||'/'} onClick={e=>{e.preventDefault();setPage(crumb.target)}}>{crumb.label}</a>:<span>{crumb.label}</span>}</li>)}</ol></nav>}
