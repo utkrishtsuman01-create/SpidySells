@@ -1,7 +1,7 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { spidySellsLogo } from './spidy-logo.js';
-import { ArrowLeft, ArrowRight, ChefHat, MapPin, Minus, Plus, ShoppingBag, Clock3, Check, X, Package, Store, ChartNoAxesCombined, Settings, LogOut, RefreshCw, Pencil, Trash2, LockKeyhole, ExternalLink, Music2, Volume2, VolumeX } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ChefHat, MapPin, Minus, Plus, ShoppingBag, Clock3, Check, X, Package, Store, ChartNoAxesCombined, Settings, LogOut, RefreshCw, Pencil, Trash2, LockKeyhole, ExternalLink } from 'lucide-react';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
@@ -87,129 +87,6 @@ function SpiderWelcomeIntro({onSkip}){
 }
 
 
-function createSpookySoundscape(){
- const AudioContextConstructor=window.AudioContext||window.webkitAudioContext;
- if(!AudioContextConstructor)return null;
- const context=new AudioContextConstructor();
- const master=context.createGain();
- master.gain.value=0;
- const compressor=context.createDynamicsCompressor();
- compressor.threshold.value=-24;
- compressor.knee.value=18;
- compressor.ratio.value=5;
- compressor.attack.value=0.025;
- compressor.release.value=0.35;
- master.connect(compressor);
- compressor.connect(context.destination);
-
- const dryBus=context.createGain();
- dryBus.gain.value=0.82;
- dryBus.connect(master);
- const wetBus=context.createGain();
- wetBus.gain.value=0.34;
- wetBus.connect(master);
- const reverb=context.createConvolver();
- const impulseLength=Math.floor(context.sampleRate*2.7);
- const impulse=context.createBuffer(2,impulseLength,context.sampleRate);
- for(let channel=0;channel<2;channel++){
-  const samples=impulse.getChannelData(channel);
-  for(let i=0;i<impulseLength;i++){
-   const fade=Math.pow(1-i/impulseLength,3.1);
-   samples[i]=(Math.random()*2-1)*fade;
-  }
- }
- reverb.buffer=impulse;
- reverb.connect(wetBus);
-
- const lowpass=context.createBiquadFilter();
- lowpass.type='lowpass';
- lowpass.frequency.value=820;
- lowpass.Q.value=0.45;
- lowpass.connect(dryBus);
- lowpass.connect(reverb);
- const droneNotes=[
-  {frequency:55,gain:0.26,type:'sine'},
-  {frequency:82.4069,gain:0.12,type:'triangle'},
-  {frequency:155.5635,gain:0.055,type:'sine'},
-  {frequency:164.8138,gain:0.028,type:'sine'}
- ];
- const droneOscillators=droneNotes.map(note=>{
-  const oscillator=context.createOscillator();
-  const volume=context.createGain();
-  oscillator.type=note.type;
-  oscillator.frequency.value=note.frequency;
-  volume.gain.value=note.gain;
-  oscillator.connect(volume);
-  volume.connect(lowpass);
-  oscillator.start();
-  return oscillator;
- });
-
- // Removed the filtered noise/static layer so only the soft drones, bells, and reverb remain.
-
-
- const bellNotes=[392,466.1638,622.254,523.251,349.228,415.305,587.33,311.127,466.1638,369.994];
- let noteIndex=0;
- const playBell=()=>{
-  if(context.state==='closed')return;
-  const frequency=bellNotes[noteIndex%bellNotes.length];
-  noteIndex+=1;
-  const now=context.currentTime;
-  const bellFilter=context.createBiquadFilter();
-  bellFilter.type='lowpass';
-  bellFilter.frequency.setValueAtTime(2300,now);
-  bellFilter.frequency.exponentialRampToValueAtTime(950,now+2.4);
-  const partials=[{ratio:1,level:0.035},{ratio:2.756,level:0.006}];
-  partials.forEach(partial=>{
-   const oscillator=context.createOscillator();
-   const envelope=context.createGain();
-   oscillator.type='sine';
-   oscillator.frequency.value=frequency*partial.ratio;
-   envelope.gain.setValueAtTime(0.0001,now);
-   envelope.gain.exponentialRampToValueAtTime(partial.level,now+0.045);
-   envelope.gain.exponentialRampToValueAtTime(0.0001,now+2.6);
-   oscillator.connect(envelope);
-   envelope.connect(bellFilter);
-   oscillator.start(now);
-   oscillator.stop(now+2.7);
-  });
-  bellFilter.connect(dryBus);
-  bellFilter.connect(reverb);
- };
- let chordIndex=0;
- const progression=[
-  [55,82.4069,155.5635,164.8138],
-  [51.9131,77.7817,138.5913,155.5635],
-  [43.6535,65.4064,130.8128,146.8324],
-  [49,73.4162,146.8324,164.8138]
- ];
- const motifTimer=window.setInterval(playBell,4300);
- const chordTimer=window.setInterval(()=>{
-  chordIndex=(chordIndex+1)%progression.length;
-  const now=context.currentTime;
-  progression[chordIndex].forEach((frequency,index)=>{
-   droneOscillators[index].frequency.setTargetAtTime(frequency,now,2.8);
-  });
- },10500);
-
- return {
-  resume:()=>context.resume(),
-  setVolume(value){
-   if(context.state==='closed')return;
-   const now=context.currentTime;
-   master.gain.cancelScheduledValues(now);
-   master.gain.setTargetAtTime(Math.max(0,Math.min(0.36,Number(value)||0)),now,0.45);
-  },
-  dispose(){
-   window.clearInterval(motifTimer);
-   window.clearInterval(chordTimer);
-   try{noise.stop()}catch{}
-   droneOscillators.forEach(oscillator=>{try{oscillator.stop()}catch{}});
-   context.close();
-  }
- };
-}
-
 export default function App(){
  const [page,setPage]=useState(()=>{const path=window.location.pathname.replace(/\/+$/,'')||'/';return routeToPage[path]||(path==='/admin'?'owner':'not-found')}),[introPlaying,setIntroPlaying]=useState(()=>{try{return window.location.pathname==='/'&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches&&window.sessionStorage.getItem('spidy-intro-seen')!=='1'}catch{return false}}),[kind,setKind]=useState('pickup'),[cart,setCart]=useState([]),[customer,setCustomer]=useState(emptyCustomer),[notice,setNotice]=useState(''),[busy,setBusy]=useState(false),[orderRef,setOrderRef]=useState(''),[paymentMethod,setPaymentMethod]=useState('cash_on_pickup'),[orderDetails,setOrderDetails]=useState(null),[activeOrder,setActiveOrder]=useState(()=>{try{return JSON.parse(window.localStorage.getItem('spidy_active_order')||'null')}catch{return null}});
  const [products,setProducts]=useState([]),[branches,setBranches]=useState([]),[settings,setSettings]=useState(defaultSettings),[selectedBranch,setSelectedBranch]=useState(''),[session,setSession]=useState(null),[tab,setTab]=useState('orders'),[orders,setOrders]=useState([]),[editingProduct,setEditingProduct]=useState(null),[editingBranch,setEditingBranch]=useState(null),[resetText,setResetText]=useState(''),[passwords,setPasswords]=useState({next:'',confirm:''}),[dashboardLoading,setDashboardLoading]=useState(false),[deliveryQuote,setDeliveryQuote]=useState(null),[quoteBusy,setQuoteBusy]=useState(false),[quoteError,setQuoteError]=useState(''),[deliveryLookupRequested,setDeliveryLookupRequested]=useState(false);
@@ -221,12 +98,6 @@ export default function App(){
  const deliveryFee=kind==='delivery'?Number(matchingDeliveryQuote?.deliveryCharge||0):0;
  const selectedBranchInfo=branches.find(branch=>branch.id===selectedBranch);
  const selectedCity=/howrah/i.test((selectedBranchInfo?.name||'')+' '+(selectedBranchInfo?.address||''))?'HOWRAH':'KOLKATA';
- const [musicEnabled,setMusicEnabled]=useState(()=>{try{return window.localStorage.getItem('spidy-sells-music')!=='off'}catch{return true}});
- const [musicStarted,setMusicStarted]=useState(false);
- const [musicVolume,setMusicVolume]=useState(0.14);
- const musicControllerRef=useRef(null);
- const musicEnabledRef=useRef(musicEnabled);
- const musicVolumeRef=useRef(musicVolume);
 
  useEffect(()=>{
   if(!introPlaying)return;
@@ -240,57 +111,6 @@ export default function App(){
   window.addEventListener('keydown',onKeyDown);
   return()=>window.removeEventListener('keydown',onKeyDown);
  },[introPlaying]);
-
- function startSpookyMusic(forceStart=false){
-  if(!forceStart&&!musicEnabledRef.current)return;
-  if(!musicControllerRef.current){
-   musicControllerRef.current=createSpookySoundscape();
-  }
-  const controller=musicControllerRef.current;
-  if(!controller){setNotice('Background audio is not supported in this browser.');return}
-  controller.setVolume(musicEnabledRef.current||forceStart?musicVolumeRef.current:0);
-  controller.resume().then(()=>setMusicStarted(true)).catch(()=>setMusicStarted(false));
- }
- function toggleSpookyMusic(){
-  if(musicStarted){
-   musicEnabledRef.current=false;
-   setMusicEnabled(false);
-   setMusicStarted(false);
-   try{window.localStorage.setItem('spidy-sells-music','off')}catch{}
-   musicControllerRef.current?.setVolume(0);
-   return;
-  }
-  musicEnabledRef.current=true;
-  setMusicEnabled(true);
-  try{window.localStorage.setItem('spidy-sells-music','on')}catch{}
-  startSpookyMusic(true);
- }
-
-
- useEffect(()=>{
-  musicEnabledRef.current=musicEnabled;
-  musicVolumeRef.current=musicVolume;
-  if(musicControllerRef.current){
-   musicControllerRef.current.setVolume(musicEnabled&&musicStarted?musicVolume:0);
-  }
- },[musicEnabled,musicStarted,musicVolume]);
- useEffect(()=>{
-  if(!musicEnabled)return;
-  const startOnFirstInteraction=event=>{
-   if(event.target?.closest?.('.ambient-music-control'))return;
-   if(event.type==='keydown'&&!['Enter',' '].includes(event.key))return;
-   startSpookyMusic();
-   document.removeEventListener('pointerdown',startOnFirstInteraction,true);
-   document.removeEventListener('keydown',startOnFirstInteraction,true);
-  };
-  document.addEventListener('pointerdown',startOnFirstInteraction,true);
-  document.addEventListener('keydown',startOnFirstInteraction,true);
-  return()=>{
-   document.removeEventListener('pointerdown',startOnFirstInteraction,true);
-   document.removeEventListener('keydown',startOnFirstInteraction,true);
-  };
- },[musicEnabled]);
- useEffect(()=>()=>{musicControllerRef.current?.dispose();musicControllerRef.current=null},[]);
 
  useEffect(()=>{if(!supabase)return;refreshPublic();supabase.auth.getSession().then(({data})=>{setSession(data.session);if(data.session)loadAdminData()});const {data:{subscription}}=supabase.auth.onAuthStateChange((_e,s)=>{setSession(s);if(s){setPage('admin');loadAdminData()}else if(page==='admin')setPage('location')});return()=>subscription.unsubscribe()},[]);
  useEffect(()=>{
@@ -497,5 +317,5 @@ export default function App(){
  {tab==='settings'&&<><div className="section-heading"><h2>Store settings</h2></div><form className="admin-form" onSubmit={saveSettings}><label>Store name<input name="business_name" required defaultValue={settings.business_name}/></label><label>WhatsApp number with country code<input name="whatsapp_number" required defaultValue={settings.whatsapp_number}/></label><label>Delivery charge in ₹<input name="delivery_charge" type="number" min="0" step="1" defaultValue={settings.delivery_charge}/></label><label>Customer checkout instructions<textarea name="pickup_instructions" defaultValue={settings.pickup_instructions||''}/></label><label className="check-label"><input name="delivery_enabled" type="checkbox" defaultChecked={settings.delivery_enabled}/> Enable online delivery checkout</label><button className="primary small-button">Save settings</button></form><form className="admin-form" onSubmit={changePassword}><h3><LockKeyhole size={17}/> Change password</h3><label>New password<input type="password" minLength="10" required value={passwords.next} onChange={e=>setPasswords({...passwords,next:e.target.value})}/></label><label>Confirm new password<input type="password" minLength="10" required value={passwords.confirm} onChange={e=>setPasswords({...passwords,confirm:e.target.value})}/></label><button className="primary small-button">Update password</button></form><form className="admin-form destructive" onSubmit={resetOrders}><h3>Reset all order records</h3><p>This permanently deletes all orders and order items. It records an audit event. This cannot be undone.</p><label>Type RESET ALL ORDERS to confirm<input value={resetText} onChange={e=>setResetText(e.target.value)} placeholder="RESET ALL ORDERS"/></label><button className="danger-button" disabled={resetText!=='RESET ALL ORDERS'}>Reset all orders</button></form></>}
  </main>}
  <footer className="footer"><div className="footer-brand"><img className="footer-logo" src={spidySellsLogo} alt="Spidy Sells logo" /></div><p>Small moments. Beautiful desserts.</p><nav className="footer-nav" aria-label="Footer links"><a href="/">Home</a><a href="/admin">Owner login</a></nav><div className="copyright">© {new Date().getFullYear()} Spidy Sells · Kolkata, India</div></footer>
- </div>{introPlaying&&<SpiderWelcomeIntro onSkip={finishIntro}/>}<div className={`ambient-music-control ${musicStarted&&musicEnabled?'is-playing':''}`} aria-label="Background music controls"><button type="button" className="ambient-music-toggle" onClick={toggleSpookyMusic} aria-label={musicStarted&&musicEnabled?'Turn spooky music off':'Turn spooky music on'} title={musicStarted&&musicEnabled?'Turn spooky music off':'Turn spooky music on'}>{musicStarted&&musicEnabled?<Volume2 size={16}/>:musicEnabled?<Music2 size={16}/>:<VolumeX size={16}/>}<span>{musicStarted&&musicEnabled?'Spooky ambience on':musicEnabled?'Enable spooky music':'Spooky music off'}</span></button><label className="ambient-volume" title="Background music volume"><Volume2 size={13}/><input type="range" min="0" max="0.36" step="0.01" value={musicVolume} onChange={event=>{const value=Number(event.target.value);musicVolumeRef.current=value;setMusicVolume(value);musicControllerRef.current?.setVolume(musicEnabledRef.current&&musicStarted?value:0)}} aria-label="Background music volume"/></label><span className="ambient-sr-only" role="status" aria-live="polite">{musicStarted&&musicEnabled?'Spooky background music playing':musicEnabled?'Spooky background music will start after your first interaction':'Spooky background music muted'}</span></div></div>
+ </div>{introPlaying&&<SpiderWelcomeIntro onSkip={finishIntro}/>}</div>
 }
