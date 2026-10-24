@@ -15,8 +15,79 @@ const pretty = s => String(s||'').replaceAll('_',' ').replace(/\b\w/g,c=>c.toUpp
 const routeToPage = {'/':'location','/order-type':'type','/menu':'menu','/bag':'cart','/checkout':'checkout','/order-confirmation':'success','/admin':'owner'};
 const pageToRoute = {location:'/',type:'/order-type',menu:'/menu',cart:'/bag',checkout:'/checkout',success:'/order-confirmation',owner:'/admin',admin:'/admin'};
 
+
+function SpiderWelcomeIntro({onSkip}){
+ const spokes=Array.from({length:16},(_,index)=>{
+  const angle=(-Math.PI/2)+(index*Math.PI/8);
+  return {x:500+Math.cos(angle)*382,y:500+Math.sin(angle)*382,index};
+ });
+ const rings=[48,84,122,162,204,248,292,336,378];
+ return <div className="spider-intro" aria-label="Spidy Sells welcome animation">
+  <div className="spider-intro-wash" aria-hidden="true"/>
+  <svg className="spider-intro-web" viewBox="0 0 1000 1000" aria-hidden="true">
+   <g className="spider-web-spokes">
+    {spokes.map(({x,y,index})=><path key={index} className="spider-web-spoke" pathLength="1" style={{animationDelay:(3.48+index*0.022)+'s'}} d={`M 500 500 L ${x.toFixed(2)} ${y.toFixed(2)}`}/>)}
+   </g>
+   <g className="spider-web-rings">
+    {rings.map((radius,index)=><circle key={radius} className="spider-web-ring" pathLength="1" style={{animationDelay:(3.52+index*0.105)+'s'}} cx="500" cy="500" r={radius}/>)}
+    {Array.from({length:8},(_,index)=>{
+     const angle=(-Math.PI/2)+(index*Math.PI/4);
+     const x=500+Math.cos(angle)*378;
+     const y=500+Math.sin(angle)*378;
+     const x2=500+Math.cos(angle+Math.PI/4)*378;
+     const y2=500+Math.sin(angle+Math.PI/4)*378;
+     const qx=500+Math.cos(angle+Math.PI/8)*300;
+     const qy=500+Math.sin(angle+Math.PI/8)*300;
+     return <path key={'bridge-'+index} className="spider-web-bridge" pathLength="1" style={{animationDelay:(3.7+index*0.07)+'s'}} d={`M ${x.toFixed(2)} ${y.toFixed(2)} Q ${qx.toFixed(2)} ${qy.toFixed(2)} ${x2.toFixed(2)} ${y2.toFixed(2)}`}/>;
+    })}
+   </g>
+   <circle className="spider-web-dew" cx="500" cy="500" r="5"/>
+  </svg>
+  <svg className="spider-intro-silk" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+   <path pathLength="1" d="M 97 95 Q 77 72 50 50"/>
+  </svg>
+  <div className="spider-intro-drop-thread" aria-hidden="true"/>
+  <svg className="spider-intro-crawler" viewBox="0 0 100 100" aria-hidden="true">
+   <defs>
+    <radialGradient id="spidy-shell" cx="34%" cy="25%" r="75%">
+     <stop offset="0%" stopColor="#514035"/>
+     <stop offset="46%" stopColor="#2B211B"/>
+     <stop offset="100%" stopColor="#17110e"/>
+    </radialGradient>
+    <linearGradient id="spidy-gold" x1="0" y1="0" x2="1" y2="1">
+     <stop offset="0%" stopColor="#E8CF9D"/>
+     <stop offset="100%" stopColor="#B18A4B"/>
+    </linearGradient>
+   </defs>
+   <g className="spider-leg-motion" fill="none" stroke="#2B211B" strokeWidth="4.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M42 39 Q31 25 13 22 L5 12"/>
+    <path d="M39 45 Q23 38 8 43 L3 38"/>
+    <path d="M39 52 Q21 59 10 69 L4 76"/>
+    <path d="M43 58 Q32 73 19 82 L13 91"/>
+    <path d="M58 39 Q69 25 87 22 L95 12"/>
+    <path d="M61 45 Q77 38 92 43 L97 38"/>
+    <path d="M61 52 Q79 59 90 69 L96 76"/>
+    <path d="M57 58 Q68 73 81 82 L87 91"/>
+   </g>
+   <g fill="url(#spidy-gold)">
+    <circle cx="31" cy="27" r="2.5"/><circle cx="24" cy="39" r="2.5"/><circle cx="22" cy="60" r="2.5"/><circle cx="32" cy="73" r="2.5"/>
+    <circle cx="69" cy="27" r="2.5"/><circle cx="76" cy="39" r="2.5"/><circle cx="78" cy="60" r="2.5"/><circle cx="68" cy="73" r="2.5"/>
+   </g>
+   <ellipse cx="50" cy="58" rx="15" ry="19" fill="url(#spidy-shell)" stroke="#B18A4B" strokeWidth="1.2"/>
+   <path d="M43 51 Q50 45 57 51" fill="none" stroke="#B18A4B" strokeOpacity=".9" strokeWidth="1.5" strokeLinecap="round"/>
+   <ellipse cx="50" cy="39" rx="11" ry="12" fill="url(#spidy-shell)" stroke="#B18A4B" strokeWidth="1.2"/>
+   <circle cx="46" cy="36" r="2.3" fill="#E8CF9D"/>
+   <circle cx="54" cy="36" r="2.3" fill="#E8CF9D"/>
+   <circle cx="46.5" cy="36" r="1" fill="#17110e"/>
+   <circle cx="54.5" cy="36" r="1" fill="#17110e"/>
+  </svg>
+  <div className="spider-intro-signature" aria-hidden="true">A LITTLE WEB OF HAPPINESS</div>
+  <button type="button" className="spider-intro-skip" onClick={onSkip}>Skip intro <ArrowRight size={15}/></button>
+ </div>;
+}
+
 export default function App(){
- const [page,setPage]=useState(()=>{const path=window.location.pathname.replace(/\/+$/,'')||'/';return routeToPage[path]||(path==='/admin'?'owner':'not-found')}),[kind,setKind]=useState('pickup'),[cart,setCart]=useState([]),[customer,setCustomer]=useState(emptyCustomer),[notice,setNotice]=useState(''),[busy,setBusy]=useState(false),[orderRef,setOrderRef]=useState(''),[paymentMethod,setPaymentMethod]=useState('cash_on_pickup'),[orderDetails,setOrderDetails]=useState(null),[activeOrder,setActiveOrder]=useState(()=>{try{return JSON.parse(window.localStorage.getItem('spidy_active_order')||'null')}catch{return null}});
+ const [page,setPage]=useState(()=>{const path=window.location.pathname.replace(/\/+$/,'')||'/';return routeToPage[path]||(path==='/admin'?'owner':'not-found')}),[introPlaying,setIntroPlaying]=useState(()=>{try{return (window.location.pathname.replace(/\\/+$/,'')||'/')==='/'&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches&&window.sessionStorage.getItem('spidy-intro-seen')!=='1'}catch{return false}}),[kind,setKind]=useState('pickup'),[cart,setCart]=useState([]),[customer,setCustomer]=useState(emptyCustomer),[notice,setNotice]=useState(''),[busy,setBusy]=useState(false),[orderRef,setOrderRef]=useState(''),[paymentMethod,setPaymentMethod]=useState('cash_on_pickup'),[orderDetails,setOrderDetails]=useState(null),[activeOrder,setActiveOrder]=useState(()=>{try{return JSON.parse(window.localStorage.getItem('spidy_active_order')||'null')}catch{return null}});
  const [products,setProducts]=useState([]),[branches,setBranches]=useState([]),[settings,setSettings]=useState(defaultSettings),[selectedBranch,setSelectedBranch]=useState(''),[session,setSession]=useState(null),[tab,setTab]=useState('orders'),[orders,setOrders]=useState([]),[editingProduct,setEditingProduct]=useState(null),[editingBranch,setEditingBranch]=useState(null),[resetText,setResetText]=useState(''),[passwords,setPasswords]=useState({next:'',confirm:''}),[dashboardLoading,setDashboardLoading]=useState(false),[deliveryQuote,setDeliveryQuote]=useState(null),[quoteBusy,setQuoteBusy]=useState(false),[quoteError,setQuoteError]=useState(''),[deliveryLookupRequested,setDeliveryLookupRequested]=useState(false);
  const [customerOrderHistory,setCustomerOrderHistory]=useState([]),[customerHistoryLoading,setCustomerHistoryLoading]=useState(false),[customerHistorySearched,setCustomerHistorySearched]=useState(false),[customerHistoryMessage,setCustomerHistoryMessage]=useState('');
  const [historyReference,setHistoryReference]=useState(()=>{try{return JSON.parse(window.localStorage.getItem('spidy_active_order')||'null')?.order_reference||''}catch{return ''}});
@@ -26,6 +97,12 @@ export default function App(){
  const deliveryFee=kind==='delivery'?Number(matchingDeliveryQuote?.deliveryCharge||0):0;
  const selectedBranchInfo=branches.find(branch=>branch.id===selectedBranch);
  const selectedCity=/howrah/i.test((selectedBranchInfo?.name||'')+' '+(selectedBranchInfo?.address||''))?'HOWRAH':'KOLKATA';
+ useEffect(()=>{
+  if(!introPlaying)return;
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){finishIntro();return}
+  const timer=window.setTimeout(finishIntro,6350);
+  return()=>window.clearTimeout(timer);
+ },[introPlaying]);
  useEffect(()=>{if(!supabase)return;refreshPublic();supabase.auth.getSession().then(({data})=>{setSession(data.session);if(data.session)loadAdminData()});const {data:{subscription}}=supabase.auth.onAuthStateChange((_e,s)=>{setSession(s);if(s){setPage('admin');loadAdminData()}else if(page==='admin')setPage('location')});return()=>subscription.unsubscribe()},[]);
  useEffect(()=>{
   const metadata={
@@ -198,6 +275,7 @@ export default function App(){
  async function saveSettings(e){e.preventDefault();const f=new FormData(e.currentTarget);const row={business_name:String(f.get('business_name')).trim(),whatsapp_number:String(f.get('whatsapp_number')).replace(/[^0-9]/g,''),delivery_enabled:f.get('delivery_enabled')==='on',delivery_charge:Number(f.get('delivery_charge')||0),pickup_instructions:String(f.get('pickup_instructions')).trim(),updated_at:new Date().toISOString()};if(row.whatsapp_number.length<10){setNotice('Enter the WhatsApp number including country code.');return}let result;if(settings.id)result=await supabase.from('business_settings').update(row).eq('id',settings.id);else result=await supabase.from('business_settings').insert(row);if(result.error)setNotice(result.error.message);else{setNotice('Settings saved.');await loadAdminData()}}
  async function changePassword(e){e.preventDefault();if(passwords.next.length<10){setNotice('Use at least 10 characters for the new password.');return}if(passwords.next!==passwords.confirm){setNotice('The passwords do not match.');return}const {error}=await supabase.auth.updateUser({password:passwords.next});if(error)setNotice(error.message);else{setNotice('Password updated successfully.');setPasswords({next:'',confirm:''});e.currentTarget.reset()}}
  async function resetOrders(e){e.preventDefault();if(resetText!=='RESET ALL ORDERS'){setNotice('Type RESET ALL ORDERS exactly to continue.');return}if(!window.confirm('This permanently deletes all order records and their items. Continue?'))return;const {data,error}=await supabase.rpc('admin_reset_orders',{p_confirmation:resetText});if(error)setNotice(error.message);else{setNotice('Reset complete. '+data+' orders deleted.');setResetText('');await loadAdminData()}}
+ function finishIntro(){try{window.sessionStorage.setItem('spidy-intro-seen','1')}catch{}setIntroPlaying(false)}
  const completedSales=orders.filter(o=>o.status==='completed').reduce((s,o)=>s+Number(o.total||0),0);
  const converted=orders.filter(o=>['confirmed','preparing','ready_for_pickup','out_for_delivery','completed'].includes(o.status)).length;
  const unconverted=orders.filter(o=>['not_converted','cancelled'].includes(o.status)).length;
@@ -211,7 +289,7 @@ export default function App(){
   admin:[{label:'Home',target:'location'},{label:'Owner dashboard'}]
  };
  const breadcrumbs=breadcrumbMap[page]||[];
- return <div className="site">
+ return <div className="site"><div className="site-content" inert={introPlaying} aria-hidden={introPlaying || undefined}>
  <header className="header"><a className="brand" href="/" onClick={e=>{e.preventDefault();setPage('location')}} aria-label="Spidy Sells home"><img className="brand-logo" src={spidySellsLogo} alt="Spidy Sells logo" /></a><div className="header-right">{['menu','cart','checkout'].includes(page)&&cart.length>0&&<button className="bag" onClick={()=>setPage('cart')}><ShoppingBag size={17}/> Bag <i>{cart.reduce((s,i)=>s+i.qty,0)}</i></button>}{page==='admin'&&<button className="owner" onClick={logout}><LogOut size={14} style={{verticalAlign:'middle'}}/> Log out</button>}</div></header>
  {notice&&<div className="notice" role="status">{notice}<button onClick={()=>setNotice('')} aria-label="Dismiss"><X size={15}/></button></div>}
  {breadcrumbs.length>0&&<nav className="breadcrumbs" aria-label="Breadcrumb"><ol>{breadcrumbs.map((crumb,index)=><li key={crumb.label} aria-current={index===breadcrumbs.length-1?'page':undefined}>{crumb.target?<a href={pageToRoute[crumb.target]||'/'} onClick={e=>{e.preventDefault();setPage(crumb.target)}}>{crumb.label}</a>:<span>{crumb.label}</span>}</li>)}</ol></nav>}
@@ -230,5 +308,5 @@ export default function App(){
  {tab==='settings'&&<><div className="section-heading"><h2>Store settings</h2></div><form className="admin-form" onSubmit={saveSettings}><label>Store name<input name="business_name" required defaultValue={settings.business_name}/></label><label>WhatsApp number with country code<input name="whatsapp_number" required defaultValue={settings.whatsapp_number}/></label><label>Delivery charge in ₹<input name="delivery_charge" type="number" min="0" step="1" defaultValue={settings.delivery_charge}/></label><label>Customer checkout instructions<textarea name="pickup_instructions" defaultValue={settings.pickup_instructions||''}/></label><label className="check-label"><input name="delivery_enabled" type="checkbox" defaultChecked={settings.delivery_enabled}/> Enable online delivery checkout</label><button className="primary small-button">Save settings</button></form><form className="admin-form" onSubmit={changePassword}><h3><LockKeyhole size={17}/> Change password</h3><label>New password<input type="password" minLength="10" required value={passwords.next} onChange={e=>setPasswords({...passwords,next:e.target.value})}/></label><label>Confirm new password<input type="password" minLength="10" required value={passwords.confirm} onChange={e=>setPasswords({...passwords,confirm:e.target.value})}/></label><button className="primary small-button">Update password</button></form><form className="admin-form destructive" onSubmit={resetOrders}><h3>Reset all order records</h3><p>This permanently deletes all orders and order items. It records an audit event. This cannot be undone.</p><label>Type RESET ALL ORDERS to confirm<input value={resetText} onChange={e=>setResetText(e.target.value)} placeholder="RESET ALL ORDERS"/></label><button className="danger-button" disabled={resetText!=='RESET ALL ORDERS'}>Reset all orders</button></form></>}
  </main>}
  <footer className="footer"><div className="footer-brand"><img className="footer-logo" src={spidySellsLogo} alt="Spidy Sells logo" /></div><p>Small moments. Beautiful desserts.</p><nav className="footer-nav" aria-label="Footer links"><a href="/">Home</a><a href="/admin">Owner login</a></nav><div className="copyright">© {new Date().getFullYear()} Spidy Sells · Kolkata, India</div></footer>
- </div>
+ </div>{introPlaying&&<SpiderWelcomeIntro onSkip={finishIntro}/>}</div>
 }
