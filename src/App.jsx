@@ -36,7 +36,7 @@ export default function App(){
    'not-found':{title:'Page Not Found | Spidy Sells',description:'This Spidy Sells page could not be found. Return to the store homepage to continue.'}
   };
   const current=metadata[page]||metadata.location;
-  const origin='https://spidy-sells.vercel.app';
+  const origin='https://spidysells.com';
   document.title=current.title;
   const setMeta=(selector,attr,value,content)=>{let node=document.head.querySelector(selector);if(!node){node=document.createElement('meta');node.setAttribute(attr,value);document.head.appendChild(node)}node.setAttribute('content',content)};
   setMeta('meta[name="description"]','name','description',current.description);
@@ -62,7 +62,7 @@ export default function App(){
    const locality=placeText.includes('howrah')?'Howrah':placeText.includes('kolkata')?'Kolkata':undefined;
    const address={'@type':'PostalAddress',streetAddress:branch.address,addressRegion:'West Bengal',addressCountry:'IN'};
    if(locality)address.addressLocality=locality;
-   const item={'@type':'FoodEstablishment',name:(settings.business_name||'Spidy Sells')+' - '+branch.name,url:'https://spidy-sells.vercel.app/',parentOrganization:{'@type':'Organization',name:settings.business_name||'Spidy Sells',url:'https://spidy-sells.vercel.app/'},servesCuisine:'Desserts',address};
+   const item={'@type':'FoodEstablishment',name:(settings.business_name||'Spidy Sells')+' - '+branch.name,url:'https://spidysells.com/',parentOrganization:{'@type':'Organization',name:settings.business_name||'Spidy Sells',url:'https://spidysells.com/'},servesCuisine:'Desserts',address};
    if(branch.contact_phone)item.telephone=branch.contact_phone;
    if(branch.google_maps_url)item.hasMap=branch.google_maps_url;
    return item;
