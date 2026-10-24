@@ -1,7 +1,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
-const GOOGLE_MAPS_API_KEY = Deno.env.get("GOOGLE_MAPS_API_KEY") ?? "";
+const GEOAPIFY_API_KEY = Deno.env.get("GEOAPIFY_API_KEY") ?? "";
 
 function getServiceRoleKey(): string {
   const legacy = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
@@ -81,23 +81,70 @@ function deliveryFeeFromMeters(distanceMeters: number): number {
   return 90 + Math.ceil((distanceMeters - 20_000) / 1_000) * 3;
 }
 
-async function getQuote(branchId: string, address: string, distanceKm: number) {
+async function geocodeAddress(address: string, bias?: { lat: number; lon: number }) {
+  const url = new URL("https://api.geoapify.com/v1/geocode/search");
+  url.searchParams.set("text", address);
+  url.searchParams.set("format", "json");
+  url.searchParams.set("limit", "1");
+  url.searchParams.set("filter", "countrycode:in");
+  url.searchParams.set("lang", "en");
+  if (bias) url.searchParams.set("bias", `proximity:${bias.lon},${bias.lat}`);
+  url.searchParams.set("apiKey", GEOAPIFY_API_KEY);
+
+  const response = await fetch(url);
+  const payload = await response.json().catch(() => null);
+  if (!response.ok) {
+    const details = typeof payload?.message === "string" ? payload.message : `HTTP ${response.status}`;
+    console.error("Geoapify geocoding failed", response.status, details);
+    throw new Error("Could not locate the address. Please check it and include the street, area, city and PIN code.");
+  }
+
+  const match = payload?.results?.[0];
+  const lat = Number(match?.lat);
+  const lon = Number(match?.lon);
+  if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
+    throw new Error("We could not locate that address. Add the street, area, city and PIN code.");
+  }
+  return { lat, lon, confidence: Number(match?.rank?.confidence ?? 0) };
+}
+
+async function getQuote(branchId: string, address: string) {
   if (!SUPABASE_URL || !SERVICE_KEY) throw new Error("Server configuration is incomplete.");
+  if (!GEOAPIFY_API_KEY) throw new Error("Free delivery routing is not configured yet. The store owner needs to add GEOAPIFY_API_KEY in Supabase secrets.");
   if (!isUuid(branchId)) throw new Error("Please select a valid store location.");
   const cleanAddress = address.trim();
   if (cleanAddress.length < 10) throw new Error("Please enter the full address, including area and PIN code.");
   if (cleanAddress.length > 500) throw new Error("The delivery address is too long.");
-  if (!Number.isFinite(distanceKm) || distanceKm <= 0 || distanceKm > 300) {
-    throw new Error("Enter the driving distance shown in Google Maps, between 0.1 and 300 km.");
-  }
 
   const branch = await getBranch(branchId);
   if (!branch.delivery_enabled) throw new Error("Delivery is not available from this store location.");
   if (!(await deliveryAllowed())) throw new Error("Delivery is currently unavailable. Please choose takeaway.");
 
-  // No Google Routes API call is made. The customer enters the driving distance
-  // they can see in the regular Google Maps app, so no billing-enabled API key is needed.
-  const distanceMeters = Math.round(distanceKm * 1000);
+  const originQuery = `${branch.name}, ${branch.address}, West Bengal, India`;
+  const destinationQuery = `${cleanAddress}, West Bengal, India`;
+  const origin = await geocodeAddress(originQuery);
+  const destination = await geocodeAddress(destinationQuery, origin);
+
+  const routeUrl = new URL("https://api.geoapify.com/v1/routing");
+  routeUrl.searchParams.set("waypoints", `${origin.lat},${origin.lon}|${destination.lat},${destination.lon}`);
+  routeUrl.searchParams.set("mode", "drive");
+  routeUrl.searchParams.set("format", "json");
+  routeUrl.searchParams.set("units", "metric");
+  routeUrl.searchParams.set("apiKey", GEOAPIFY_API_KEY);
+
+  const routeResponse = await fetch(routeUrl);
+  const routePayload = await routeResponse.json().catch(() => null);
+  if (!routeResponse.ok) {
+    const details = typeof routePayload?.message === "string" ? routePayload.message : `HTTP ${routeResponse.status}`;
+    console.error("Geoapify routing failed", routeResponse.status, details);
+    throw new Error("Could not calculate the driving route. Please check the address or try again.");
+  }
+
+  const distanceMeters = Number(routePayload?.results?.[0]?.distance);
+  if (!Number.isFinite(distanceMeters) || distanceMeters <= 0) {
+    throw new Error("No driving route was found for that address. Please add a nearby landmark or PIN code.");
+  }
+
   return {
     branchId: branch.id,
     branchName: branch.name,
@@ -106,7 +153,6 @@ async function getQuote(branchId: string, address: string, distanceKm: number) {
     deliveryCharge: deliveryFeeFromMeters(distanceMeters),
   };
 }
-
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method !== "POST") return json({ ok: false, message: "Use POST for this request." }, 405);
@@ -123,9 +169,8 @@ Deno.serve(async (req: Request) => {
     try {
       const branchId = body.branchId;
       const address = body.address;
-      const distanceKm = Number(body.distanceKm);
       if (typeof address !== "string") throw new Error("Please enter your delivery address.");
-      const quote = await getQuote(String(branchId ?? ""), address, distanceKm);
+      const quote = await getQuote(String(branchId ?? ""), address);
       return json({
         ok: true,
         branchId: quote.branchId,
@@ -151,7 +196,6 @@ Deno.serve(async (req: Request) => {
     const name = typeof body.name === "string" ? body.name.trim() : "";
     const phone = typeof body.phone === "string" ? body.phone.trim() : "";
     const address = typeof body.address === "string" ? body.address.trim() : "";
-    const distanceKm = Number(body.distanceKm);
     const notes = typeof body.notes === "string" ? body.notes.trim().slice(0, 1000) : "";
     const items = body.items;
 
@@ -168,7 +212,7 @@ Deno.serve(async (req: Request) => {
       if (!branch.takeaway_enabled) throw new Error("Takeaway is not available at this location.");
     } else {
       if (!address) throw new Error("Please enter your full delivery address.");
-      quote = await getQuote(branchId, address, distanceKm);
+      quote = await getQuote(branchId, address);
     }
 
     const rpcParams = {
