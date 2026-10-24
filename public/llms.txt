@@ -1,0 +1,16 @@
+# Spidy Sells
+
+> Spidy Sells offers tiramisu and dessert ordering for customers in Kolkata and Howrah, West Bengal, India.
+
+## Public pages
+- [Home](https://spidysells.com/): Choose a service location and view current ordering options.
+- [Menu](https://spidysells.com/menu): Browse currently published desserts and prices when the storefront is available.
+
+## Important notes
+- Menu items, prices, branch availability, and delivery options can change.
+- Orders are not confirmed until the storefront completes its order flow.
+- Use the website for the latest available information.
+
+## Crawl guidance
+- Sitemap: https://spidysells.com/sitemap.xml
+- Robots policy: https://spidysells.com/robots.txt
