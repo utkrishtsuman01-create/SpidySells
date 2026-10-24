@@ -35,6 +35,23 @@
 
 /* Customer order confirmation and active order tracker */
 .home-active-order{margin-top:26px;border:1px solid #ddcaa9;background:#fffdf8;padding:22px 24px;color:var(--brown)}
+.customer-order-history{width:100%;max-width:760px;margin:30px auto 0;padding:24px;background:#fffdf8;border:1px solid #ddcaa9;color:var(--brown);text-align:left}
+.customer-history-heading .kicker{margin:0 0 8px;font-size:9px}
+.customer-history-heading h2{font:600 clamp(22px,3vw,29px) 'Playfair Display',serif;margin:0}
+.customer-history-heading p{font-size:12px;line-height:1.8;color:var(--muted);margin:9px 0 0;max-width:560px}
+.customer-history-form{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+.customer-history-form label{display:grid;gap:7px;font-size:11px;font-weight:600;color:var(--brown)}
+.customer-history-form input{width:100%;min-width:0;border:1px solid #e1d4c0;background:#fffdf9;padding:13px;color:var(--brown);font-size:12px}
+.customer-history-form input::placeholder{color:#b3a493}
+.customer-history-form .primary{grid-column:1/-1;margin-top:0}
+.customer-history-message,.customer-history-loading{font-size:11px;line-height:1.7;color:var(--muted);margin:14px 0 0}
+.customer-history-error{color:#9b3c2f}
+.customer-history-list{display:grid;gap:12px;margin-top:18px}
+.customer-history-order{margin-top:0;padding:18px}
+.customer-history-order h3{font:600 17px 'Playfair Display',serif;margin:0}
+.customer-history-meta{display:flex;flex-wrap:wrap;justify-content:space-between;gap:5px 14px;margin-top:10px;font-size:10px;line-height:1.6;color:var(--muted)}
+.customer-history-order>p{overflow-wrap:anywhere}
+@media(max-width:560px){.customer-order-history{padding:18px}.customer-history-form{grid-template-columns:1fr}.customer-history-form .primary{grid-column:auto}.customer-history-order{padding:16px}}
 .home-active-order .kicker{margin:0 0 12px;font-size:9px}
 .active-order-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .active-order-heading h2{font:600 21px 'Playfair Display',serif;margin:0}
