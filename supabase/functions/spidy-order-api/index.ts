@@ -82,11 +82,45 @@ function deliveryFeeFromMeters(distanceMeters: number): number {
   return 90 + Math.ceil((distanceMeters - 20_000) / 1_000) * 3;
 }
 
-async function geocodeAddress(address: string, bias?: { lat: number; lon: number }) {
+function normalizePostcode(value: unknown): string {
+  return String(value ?? "").replace(/\D/g, "");
+}
+
+function haversineMeters(a: { lat: number; lon: number }, b: { lat: number; lon: number }): number {
+  const radians = (degrees: number) => degrees * Math.PI / 180;
+  const dLat = radians(b.lat - a.lat);
+  const dLon = radians(b.lon - a.lon);
+  const lat1 = radians(a.lat);
+  const lat2 = radians(b.lat);
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
+  return 6_371_000 * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(Math.max(0, 1 - h)));
+}
+
+function geocodeScore(result: any): number {
+  const rank = result?.rank ?? {};
+  const matchPriority: Record<string, number> = {
+    full_match: 5,
+    match_by_building: 4,
+    inner_part: 3,
+    match_by_street: 2,
+    match_by_postcode: 1,
+    match_by_city_or_district: 0,
+  };
+  return (matchPriority[String(rank.match_type ?? "")] ?? 0) * 10
+    + Number(rank.confidence ?? 0) * 2
+    + Number(rank.confidence_street_level ?? 0)
+    + Number(rank.confidence_building_level ?? 0);
+}
+
+async function geocodeAddress(
+  address: string,
+  bias?: { lat: number; lon: number },
+  expectedPostcode?: string,
+) {
   const url = new URL("https://api.geoapify.com/v1/geocode/search");
   url.searchParams.set("text", address);
   url.searchParams.set("format", "json");
-  url.searchParams.set("limit", "1");
+  url.searchParams.set("limit", "5");
   url.searchParams.set("filter", "countrycode:in");
   url.searchParams.set("lang", "en");
   if (bias) url.searchParams.set("bias", `proximity:${bias.lon},${bias.lat}`);
@@ -111,13 +145,41 @@ async function geocodeAddress(address: string, bias?: { lat: number; lon: number
     throw new Error("The address lookup service returned an error. Please try again shortly.");
   }
 
-  const match = payload?.results?.[0];
-  const lat = Number(match?.lat);
-  const lon = Number(match?.lon);
-  if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
+  let candidates = (Array.isArray(payload?.results) ? payload.results : []).filter((match: any) =>
+    Number.isFinite(Number(match?.lat)) && Number.isFinite(Number(match?.lon))
+  );
+  if (!candidates.length) {
     throw new Error("We could not locate that address. Add the street, area, city and PIN code.");
   }
-  return { lat, lon, confidence: Number(match?.rank?.confidence ?? 0) };
+
+  if (expectedPostcode) {
+    const postcodeMatches = candidates.filter((match: any) =>
+      normalizePostcode(match?.postcode) === expectedPostcode
+    );
+    if (!postcodeMatches.length) {
+      throw new Error(`We couldn't match PIN code ${expectedPostcode} to this address. Please check the address and PIN code so we don't calculate the wrong delivery distance.`);
+    }
+    candidates = postcodeMatches;
+  }
+
+  candidates.sort((a: any, b: any) => {
+    const scoreDifference = geocodeScore(b) - geocodeScore(a);
+    if (Math.abs(scoreDifference) > 0.25) return scoreDifference;
+    if (bias) {
+      return haversineMeters(bias, { lat: Number(a.lat), lon: Number(a.lon) })
+        - haversineMeters(bias, { lat: Number(b.lat), lon: Number(b.lon) });
+    }
+    return 0;
+  });
+
+  const match = candidates[0];
+  return {
+    lat: Number(match.lat),
+    lon: Number(match.lon),
+    confidence: Number(match?.rank?.confidence ?? 0),
+    postcode: normalizePostcode(match?.postcode),
+    matchType: String(match?.rank?.match_type ?? "unknown"),
+  };
 }
 
 async function getQuote(branchId: string, address: string) {
@@ -132,10 +194,12 @@ async function getQuote(branchId: string, address: string) {
   if (!branch.delivery_enabled) throw new Error("Delivery is not available from this store location.");
   if (!(await deliveryAllowed())) throw new Error("Delivery is currently unavailable. Please choose takeaway.");
 
-  const originQuery = `${branch.name}, ${branch.address}, West Bengal, India`;
+  // The branch address already contains its locality/city/state; avoid duplicating it,
+  // because that can make geocoding match an unintended place.
+  const origin = await geocodeAddress(branch.address);
   const destinationQuery = `${cleanAddress}, West Bengal, India`;
-  const origin = await geocodeAddress(originQuery);
-  const destination = await geocodeAddress(destinationQuery, origin);
+  const postcodeMatch = cleanAddress.match(/\b([1-9]\d{5})\b/);
+  const destination = await geocodeAddress(destinationQuery, origin, postcodeMatch?.[1]);
 
   const routeUrl = new URL("https://api.geoapify.com/v1/routing");
   routeUrl.searchParams.set("waypoints", `${origin.lat},${origin.lon}|${destination.lat},${destination.lon}`);
@@ -166,6 +230,21 @@ async function getQuote(branchId: string, address: string) {
   const distanceMeters = Number(routePayload?.results?.[0]?.distance);
   if (!Number.isFinite(distanceMeters) || distanceMeters <= 0) {
     throw new Error("No driving route was found for that address. Please add a nearby landmark or PIN code.");
+  }
+
+  // Catch obviously mismatched geocoding results before quoting a wildly inflated route.
+  const straightLineMeters = haversineMeters(origin, destination);
+  const plausibleRouteLimitMeters = Math.max(straightLineMeters * 3.5, straightLineMeters + 12_000);
+  if (distanceMeters > plausibleRouteLimitMeters) {
+    console.error("Geoapify route rejected as implausible", {
+      routeKm: Math.round(distanceMeters / 100) / 10,
+      straightLineKm: Math.round(straightLineMeters / 100) / 10,
+      ratio: Number((distanceMeters / Math.max(straightLineMeters, 1)).toFixed(2)),
+      originMatchType: origin.matchType,
+      destinationMatchType: destination.matchType,
+      postcodeMatched: Boolean(postcodeMatch),
+    });
+    throw new Error("The address lookup produced an unusually long route, so we haven't applied a potentially incorrect delivery charge. Please check the PIN code and locality, then try again.");
   }
 
   return {
