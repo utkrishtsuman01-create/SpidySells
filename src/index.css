@@ -77,3 +77,32 @@
 .distance-help{font-size:10px;line-height:1.7;color:var(--muted);margin:-9px 0 0}
 
 .routing-attribution a{color:var(--brown);text-decoration:underline;text-underline-offset:2px}
+
+
+/* Crawlable navigation, custom missing-image treatment, and keyboard focus */
+.brand{text-decoration:none}
+.breadcrumbs{width:min(calc(100% - 44px),920px);margin:22px auto 0;color:var(--muted);font-size:11px}
+.breadcrumbs ol{display:flex;align-items:center;gap:0;flex-wrap:wrap;list-style:none;padding:0;margin:0}
+.breadcrumbs li{display:flex;align-items:center}
+.breadcrumbs li+li::before{content:"/";color:#b6a58e;margin:0 10px}
+.breadcrumbs button,.breadcrumbs span{border:0;background:transparent;color:inherit;padding:4px 0;font-size:inherit;text-decoration:none}
+.breadcrumbs button{cursor:pointer}
+.breadcrumbs button:hover{text-decoration:underline;text-underline-offset:3px;color:var(--brown)}
+.breadcrumbs [aria-current="page"] span{font-weight:700;color:var(--brown)}
+.product-photo-empty{width:100%;height:100%;display:grid;place-items:center;color:#b18a4b;background:linear-gradient(135deg,#f0e5d2,#e7d4b7)}
+.cart-image-empty{width:83px;height:83px;flex:0 0 83px;display:grid;place-items:center;background:#f0e5d2;color:#9c7945}
+.manage-product-image-empty{width:105px;height:105px;flex:0 0 105px;display:grid;place-items:center;background:#eee2d0;color:#9c7945}
+.page-not-found{padding-top:clamp(60px,12vh,110px);padding-bottom:100px}
+.page-not-found .primary{width:max-content;text-decoration:none}
+.footer-nav{display:flex;gap:16px;align-items:center}
+.footer-nav a{font-size:11px;color:var(--muted);text-decoration:none}
+.footer-nav a:hover{color:var(--brown);text-decoration:underline;text-underline-offset:3px}
+.footer-nav a:focus-visible,.breadcrumbs button:focus-visible{outline:3px solid #c59c5c;outline-offset:4px}
+@media(max-width:600px){
+ .breadcrumbs{width:calc(100% - 38px);margin-top:16px;font-size:10px}
+ .breadcrumbs li+li::before{margin:0 7px}
+ .cart-image-empty{width:66px;height:66px;flex-basis:66px}
+ .footer-nav{order:4;width:100%;padding-top:3px}
+}
+@media(max-width:760px){.manage-product-image-empty{width:86px;height:86px;flex-basis:86px}}
+@media(max-width:420px){.manage-product-image-empty{width:70px;height:70px;flex-basis:70px}}
