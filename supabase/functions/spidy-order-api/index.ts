@@ -148,10 +148,6 @@ async function geocodeAddress(
   let candidates = (Array.isArray(payload?.results) ? payload.results : []).filter((match: any) =>
     Number.isFinite(Number(match?.lat)) && Number.isFinite(Number(match?.lon))
   );
-  if (!candidates.length) {
-    throw new Error("We could not locate that address. Add the street, area, city and PIN code.");
-  }
-
   let postcodeFallback = false;
   if (expectedPostcode) {
     const postcodeMatches = candidates.filter((match: any) =>
@@ -201,6 +197,10 @@ async function geocodeAddress(
         postcodeFallback: true,
       };
     }
+  }
+
+  if (!candidates.length) {
+    throw new Error("We could not locate that address. Add the street, area, city and PIN code.");
   }
 
   candidates.sort((a: any, b: any) => {
