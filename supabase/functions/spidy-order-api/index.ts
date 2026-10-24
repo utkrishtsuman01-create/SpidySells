@@ -120,7 +120,7 @@ async function geocodeAddress(
   const url = new URL("https://api.geoapify.com/v1/geocode/search");
   url.searchParams.set("text", address);
   url.searchParams.set("format", "json");
-  url.searchParams.set("limit", "5");
+  url.searchParams.set("limit", "10");
   url.searchParams.set("filter", "countrycode:in");
   url.searchParams.set("lang", "en");
   if (bias) url.searchParams.set("bias", `proximity:${bias.lon},${bias.lat}`);
@@ -152,14 +152,55 @@ async function geocodeAddress(
     throw new Error("We could not locate that address. Add the street, area, city and PIN code.");
   }
 
+  let postcodeFallback = false;
   if (expectedPostcode) {
     const postcodeMatches = candidates.filter((match: any) =>
       normalizePostcode(match?.postcode) === expectedPostcode
     );
-    if (!postcodeMatches.length) {
-      throw new Error(`We couldn't match PIN code ${expectedPostcode} to this address. Please check the address and PIN code so we don't calculate the wrong delivery distance.`);
+    if (postcodeMatches.length) {
+      candidates = postcodeMatches;
+    } else {
+      // Geoapify sometimes finds the correct address but omits its postcode from
+      // the free-form result. In that case, resolve the PIN code as its own
+      // structured search rather than failing or accepting a mismatched result.
+      const postcodeUrl = new URL("https://api.geoapify.com/v1/geocode/search");
+      postcodeUrl.searchParams.set("postcode", expectedPostcode);
+      postcodeUrl.searchParams.set("country", "India");
+      postcodeUrl.searchParams.set("type", "postcode");
+      postcodeUrl.searchParams.set("format", "json");
+      postcodeUrl.searchParams.set("limit", "3");
+      postcodeUrl.searchParams.set("filter", "countrycode:in");
+      if (bias) postcodeUrl.searchParams.set("bias", `proximity:${bias.lon},${bias.lat}`);
+      postcodeUrl.searchParams.set("apiKey", GEOAPIFY_API_KEY);
+
+      const postcodeResponse = await fetch(postcodeUrl);
+      const postcodePayload = await postcodeResponse.json().catch(() => null);
+      if (!postcodeResponse.ok) {
+        console.error("Geoapify postcode lookup failed", postcodeResponse.status);
+        throw new Error("We couldn't verify that PIN code. Please check it and try again.");
+      }
+
+      const postcodeResults = (Array.isArray(postcodePayload?.results) ? postcodePayload.results : [])
+        .filter((match: any) =>
+          Number.isFinite(Number(match?.lat)) &&
+          Number.isFinite(Number(match?.lon)) &&
+          normalizePostcode(match?.postcode) === expectedPostcode
+        );
+
+      if (!postcodeResults.length) {
+        throw new Error(`Geoapify couldn't resolve PIN code ${expectedPostcode}. Please check the six-digit PIN code or add a nearby landmark.`);
+      }
+      postcodeResults.sort((a: any, b: any) => geocodeScore(b) - geocodeScore(a));
+      const postcodeResult = postcodeResults[0];
+      return {
+        lat: Number(postcodeResult.lat),
+        lon: Number(postcodeResult.lon),
+        confidence: Number(postcodeResult?.rank?.confidence ?? 0),
+        postcode: normalizePostcode(postcodeResult?.postcode),
+        matchType: "postcode_fallback",
+        postcodeFallback: true,
+      };
     }
-    candidates = postcodeMatches;
   }
 
   candidates.sort((a: any, b: any) => {
@@ -179,6 +220,7 @@ async function geocodeAddress(
     confidence: Number(match?.rank?.confidence ?? 0),
     postcode: normalizePostcode(match?.postcode),
     matchType: String(match?.rank?.match_type ?? "unknown"),
+    postcodeFallback,
   };
 }
 
@@ -253,6 +295,7 @@ async function getQuote(branchId: string, address: string) {
     distanceMeters,
     distanceKm: distanceMeters / 1000,
     deliveryCharge: deliveryFeeFromMeters(distanceMeters),
+    distanceApproximate: Boolean(destination.postcodeFallback),
   };
 }
 Deno.serve(async (req: Request) => {
@@ -279,6 +322,7 @@ Deno.serve(async (req: Request) => {
         branchName: quote.branchName,
         distanceKm: quote.distanceKm,
         deliveryCharge: quote.deliveryCharge,
+        distanceApproximate: quote.distanceApproximate,
       });
     } catch (error) {
       return json({
@@ -349,6 +393,7 @@ Deno.serve(async (req: Request) => {
       ...result,
       distance_meters: quote?.distanceMeters ?? null,
       delivery_distance_km: quote?.distanceKm ?? null,
+      distance_approximate: quote?.distanceApproximate ?? false,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "We could not record this order. Please retry.";
