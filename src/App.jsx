@@ -145,23 +145,8 @@ function createSpookySoundscape(){
   return oscillator;
  });
 
- const shimmerFilter=context.createBiquadFilter();
- shimmerFilter.type='bandpass';
- shimmerFilter.frequency.value=1450;
- shimmerFilter.Q.value=0.65;
- shimmerFilter.connect(dryBus);
- shimmerFilter.connect(reverb);
- const noiseBuffer=context.createBuffer(1,context.sampleRate*2,context.sampleRate);
- const noiseSamples=noiseBuffer.getChannelData(0);
- for(let i=0;i<noiseSamples.length;i++)noiseSamples[i]=(Math.random()*2-1)*0.32;
- const noise=context.createBufferSource();
- noise.buffer=noiseBuffer;
- noise.loop=true;
- const noiseGain=context.createGain();
- noiseGain.gain.value=0.027;
- noise.connect(noiseGain);
- noiseGain.connect(shimmerFilter);
- noise.start();
+ // Removed the filtered noise/static layer so only the soft drones, bells, and reverb remain.
+
 
  const bellNotes=[392,466.1638,622.254,523.251,349.228,415.305,587.33,311.127,466.1638,369.994];
  let noteIndex=0;
