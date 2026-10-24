@@ -96,7 +96,13 @@ async function geocodeAddress(address: string, bias?: { lat: number; lon: number
   if (!response.ok) {
     const details = typeof payload?.message === "string" ? payload.message : `HTTP ${response.status}`;
     console.error("Geoapify geocoding failed", response.status, details);
-    throw new Error("Could not locate the address. Please check it and include the street, area, city and PIN code.");
+    if (response.status === 401) {
+      throw new Error("Delivery distance setup issue: Geoapify rejected the API key. The store owner must replace GEOAPIFY_API_KEY in Supabase Secrets with the raw API key from the Geoapify dashboard (not the project ID or a full URL).");
+    }
+    if (response.status === 403) {
+      throw new Error("Geoapify denied the geocoding request. Check the API key restrictions in the Geoapify dashboard.");
+    }
+    throw new Error("The address lookup service returned an error. Please try again shortly.");
   }
 
   const match = payload?.results?.[0];
@@ -137,7 +143,13 @@ async function getQuote(branchId: string, address: string) {
   if (!routeResponse.ok) {
     const details = typeof routePayload?.message === "string" ? routePayload.message : `HTTP ${routeResponse.status}`;
     console.error("Geoapify routing failed", routeResponse.status, details);
-    throw new Error("Could not calculate the driving route. Please check the address or try again.");
+    if (routeResponse.status === 401) {
+      throw new Error("Delivery distance setup issue: Geoapify rejected the API key. The store owner must replace GEOAPIFY_API_KEY in Supabase Secrets with the raw API key from the Geoapify dashboard.");
+    }
+    if (routeResponse.status === 403) {
+      throw new Error("Geoapify denied the routing request. Check the API key restrictions in the Geoapify dashboard.");
+    }
+    throw new Error("The driving-route service returned an error. Please try again shortly.");
   }
 
   const distanceMeters = Number(routePayload?.results?.[0]?.distance);
