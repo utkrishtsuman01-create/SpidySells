@@ -65,7 +65,7 @@ export default function App(){
   const businesses=active.map((branch,index)=>{
    const placeText=(branch.name+' '+branch.address).toLowerCase();
    const locality=placeText.includes('howrah')?'Howrah':placeText.includes('kolkata')?'Kolkata':undefined;
-   const postcode=branch.address.match(/\\b\\d{6}\\b/)?.[0];
+   const postcode=branch.address.match(/\b\d{6}\b/)?.[0];
    const address={'@type':'PostalAddress',streetAddress:branch.address,addressRegion:'West Bengal',addressCountry:'IN'};
    if(locality)address.addressLocality=locality;
    if(postcode)address.postalCode=postcode;
