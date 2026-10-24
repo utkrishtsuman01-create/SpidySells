@@ -38,7 +38,7 @@ export default function App(){
   if(!s.error&&s.data)setSettings({...defaultSettings,...s.data});
   setDashboardLoading(false);
  }
- function chooseLocation(city){const branch=city==='howrah'?branches.find(b=>/howrah|bankra/i.test((b.name||'')+' '+(b.address||'')):branches.find(b=>/park circus|kolkata/i.test((b.name||'')+' '+(b.address||'')));setSelectedBranch(branch?.id||'');setKind('pickup');setNotice('');setPage('type')}
+ function chooseLocation(city){const branch=city==='howrah'?branches.find(b=>/howrah|bankra/i.test((b.name||'')+' '+(b.address||''))):branches.find(b=>/park circus|kolkata/i.test((b.name||'')+' '+(b.address||'')));setSelectedBranch(branch?.id||'');setKind('pickup');setNotice('');setPage('type')}
  function add(item){setCart(old=>{const x=old.find(i=>i.id===item.id);return x?old.map(i=>i.id===item.id?{...i,qty:i.qty+1}:i):[...old,{...item,price:Number(item.price),qty:1}]});setNotice('Added to your bag');}
  function changeQty(id,delta){setCart(old=>old.map(i=>i.id===id?{...i,qty:i.qty+delta}:i).filter(i=>i.qty>0))}
  async function checkout(e){
