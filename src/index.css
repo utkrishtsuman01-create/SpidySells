@@ -46,3 +46,5 @@
 .delivery-quote>div b{font-size:13px}
 .delivery-quote>small{display:block;font-size:10px;line-height:1.7;color:var(--muted)}
 .delivery-quote>small.quote-error{color:#9b3d2b}
+
+.distance-help{font-size:10px;line-height:1.7;color:var(--muted);margin:-9px 0 0}
