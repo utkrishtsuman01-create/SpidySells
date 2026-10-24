@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Spidy Sells — Tiramisu and Desserts</title>
+  <desc id="desc">A warm cream and chocolate-brown share card for Spidy Sells dessert orders in Kolkata and Howrah.</desc>
+  <rect width="1200" height="630" fill="#fbf7ef"/>
+  <rect x="24" y="24" width="1152" height="582" rx="26" fill="none" stroke="#e2d2b6" stroke-width="2"/>
+  <circle cx="1070" cy="40" r="235" fill="#f3e9d6"/>
+  <circle cx="1110" cy="570" r="210" fill="#f5edde"/>
+  <g font-family="Georgia,serif" fill="#4a2c16">
+    <text x="88" y="118" font-family="Arial,sans-serif" font-size="18" font-weight="700" letter-spacing="3" fill="#b18a4b">GOOD FOOD, GREAT MOOD</text>
+    <text x="82" y="225" font-size="90" font-weight="700">SPIDY</text>
+    <text x="82" y="315" font-size="90" font-weight="700">SELLS</text>
+    <path d="M88 350H452" stroke="#b18a4b" stroke-width="3"/>
+    <text x="88" y="402" font-size="31">Tiramisu &amp; dessert orders</text>
+    <text x="88" y="447" font-family="Arial,sans-serif" font-size="22" fill="#897968">Kolkata · Howrah · India</text>
+  </g>
+  <rect x="88" y="492" width="280" height="50" rx="25" fill="#4a2c16"/>
+  <text x="228" y="523" font-family="Arial,sans-serif" text-anchor="middle" font-size="13" font-weight="700" letter-spacing="1" fill="#fbf7ef">A LITTLE MOMENT OF JOY</text>
+  <ellipse cx="875" cy="520" rx="205" ry="34" fill="#e0d3be"/>
+  <path d="M744 390H1033L990 480H785Z" fill="#dfcaaa"/>
+  <path d="M705 277H1042L1005 418H740Z" fill="#f8eedb" stroke="#b18a4b" stroke-width="2"/>
+  <path d="M711 311H1034L1020 352H727Z" fill="#efdebe"/>
+  <path d="M727 352H1020L1008 390H740Z" fill="#714226"/>
+  <ellipse cx="873" cy="281" rx="170" ry="38" fill="#714226" stroke="#b18a4b" stroke-width="3"/>
+  <ellipse cx="873" cy="278" rx="157" ry="28" fill="#7d4c2f"/>
+  <path d="M724 316L752 402" stroke="#fffdf9" stroke-width="5" stroke-linecap="round"/>
+  <path d="M991 322L975 372" stroke="#fffdf9" stroke-width="3" stroke-linecap="round"/>
+  <g stroke="#b18a4b" stroke-width="4" stroke-linecap="round">
+    <path d="M1079 188L1108 447"/>
+    <path d="M1067 190H1091"/>
+    <path d="M1070 167V190M1078 167V190M1086 167V190" stroke-width="3"/>
+  </g>
+</svg>
