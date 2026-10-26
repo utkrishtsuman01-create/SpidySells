@@ -524,7 +524,13 @@ Deno.serve(async (req: Request) => {
     const items = body.items;
 
     if (kind !== "pickup" && kind !== "delivery") throw new Error("Please choose takeaway or delivery.");
-    const requestedPaymentMethod = body.paymentMethod === "online" ? "online" : (kind === "pickup" ? "cash_on_pickup" : "cash_on_delivery");
+    const requestedPaymentMethod = body.paymentMethod;
+    if (kind === "delivery" && requestedPaymentMethod !== "online") {
+      throw new Error("Online delivery orders must be paid online. Cash on delivery is not available at any branch.");
+    }
+    if (kind === "pickup" && requestedPaymentMethod !== "online" && requestedPaymentMethod !== "cash_on_pickup") {
+      throw new Error("Please choose a valid payment method for takeaway.");
+    }
     if (requestedPaymentMethod === "online") requireRazorpayCredentials();
     if (!isUuid(branchId)) throw new Error("Please select a valid store location.");
     if (!name || name.length > 150) throw new Error("Please enter your name.");
