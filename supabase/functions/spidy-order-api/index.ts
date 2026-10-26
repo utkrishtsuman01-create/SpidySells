@@ -28,6 +28,172 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
+
+const RAZORPAY_KEY_ID = (Deno.env.get("RAZORPAY_KEY_ID") ?? "").trim();
+const RAZORPAY_KEY_SECRET = (Deno.env.get("RAZORPAY_KEY_SECRET") ?? "").trim();
+
+function requireRazorpayCredentials() {
+  if (!RAZORPAY_KEY_ID || !RAZORPAY_KEY_SECRET) {
+    throw new Error("Live online payments are not configured yet. The store owner must add RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in Supabase Edge Function secrets.");
+  }
+}
+
+function razorpayAuthorization() {
+  requireRazorpayCredentials();
+  return `Basic ${btoa(`${RAZORPAY_KEY_ID}:${RAZORPAY_KEY_SECRET}`)}`;
+}
+
+async function razorpayRequest(path: string, init: RequestInit = {}) {
+  const response = await fetch(`https://api.razorpay.com/v1/${path}`, {
+    ...init,
+    headers: {
+      Authorization: razorpayAuthorization(),
+      "Content-Type": "application/json",
+      ...(init.headers ?? {}),
+    },
+  });
+  const payload = await response.json().catch(() => null);
+  if (!response.ok) {
+    console.error("Razorpay API request failed", {
+      path,
+      status: response.status,
+      code: payload?.error?.code,
+    });
+    if (response.status === 401) {
+      throw new Error("Razorpay rejected the configured API keys. Check that the live Key ID and Key Secret match.");
+    }
+    throw new Error("Razorpay could not complete the payment request. Please retry or contact the store.");
+  }
+  return payload;
+}
+
+async function patchOrder(orderId: string, values: Record<string, unknown>) {
+  const response = await dbRequest(`orders?id=eq.${encodeURIComponent(orderId)}`, {
+    method: "PATCH",
+    headers: { Prefer: "return=representation" },
+    body: JSON.stringify(values),
+  });
+  const rows = await response.json().catch(() => null);
+  if (!response.ok || !Array.isArray(rows) || rows.length !== 1) {
+    console.error("Order payment update failed", { orderId, status: response.status });
+    throw new Error("We couldn't update the order after the payment step. Please contact the store.");
+  }
+  return rows[0];
+}
+
+async function findOrderByRazorpayOrderId(razorpayOrderId: string) {
+  const url = new URL(`${SUPABASE_URL}/rest/v1/orders`);
+  url.searchParams.set("select", "id,order_reference,total,status,payment_method,payment_status,razorpay_order_id,razorpay_payment_id");
+  url.searchParams.set("razorpay_order_id", `eq.${razorpayOrderId}`);
+  url.searchParams.set("limit", "1");
+  const response = await dbRequest(url.pathname.replace("/rest/v1/", "") + url.search);
+  const rows = await response.json().catch(() => null);
+  if (!response.ok) throw new Error("We couldn't look up this order. Please contact the store.");
+  return Array.isArray(rows) ? rows[0] ?? null : null;
+}
+
+async function getExpectedRazorpaySignature(razorpayOrderId: string, razorpayPaymentId: string) {
+  requireRazorpayCredentials();
+  const encoder = new TextEncoder();
+  const cryptoKey = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(RAZORPAY_KEY_SECRET),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const signature = await crypto.subtle.sign(
+    "HMAC",
+    cryptoKey,
+    encoder.encode(`${razorpayOrderId}|${razorpayPaymentId}`),
+  );
+  return Array.from(new Uint8Array(signature), (byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
+function safeSignatureEquals(expected: string, received: string) {
+  if (expected.length !== received.length) return false;
+  let difference = 0;
+  for (let i = 0; i < expected.length; i++) {
+    difference |= expected.charCodeAt(i) ^ received.charCodeAt(i);
+  }
+  return difference === 0;
+}
+
+async function verifyRazorpayPayment(body: Record<string, unknown>) {
+  requireRazorpayCredentials();
+  const razorpayOrderId = typeof body.razorpay_order_id === "string" ? body.razorpay_order_id.trim() : "";
+  const razorpayPaymentId = typeof body.razorpay_payment_id === "string" ? body.razorpay_payment_id.trim() : "";
+  const receivedSignature = typeof body.razorpay_signature === "string" ? body.razorpay_signature.trim().toLowerCase() : "";
+  if (!/^order_[A-Za-z0-9]+$/.test(razorpayOrderId) || !/^pay_[A-Za-z0-9]+$/.test(razorpayPaymentId) || !/^[a-f0-9]{64}$/.test(receivedSignature)) {
+    throw new Error("Razorpay returned an incomplete payment response. Do not retry the payment yet; contact the store if money was debited.");
+  }
+
+  const order = await findOrderByRazorpayOrderId(razorpayOrderId);
+  if (!order) throw new Error("We couldn't match this Razorpay payment to a Spidy Sells order.");
+  const expectedPaise = Math.round(Number(order.total) * 100);
+  if (!Number.isSafeInteger(expectedPaise) || expectedPaise <= 0) {
+    throw new Error("This order has an invalid amount. Please contact the store.");
+  }
+
+  const expectedSignature = await getExpectedRazorpaySignature(razorpayOrderId, razorpayPaymentId);
+  if (!safeSignatureEquals(expectedSignature, receivedSignature)) {
+    throw new Error("Payment verification failed. The store has not marked this order as paid.");
+  }
+
+  let payment = await razorpayRequest(`payments/${encodeURIComponent(razorpayPaymentId)}`);
+  if (payment?.order_id !== razorpayOrderId || Number(payment?.amount) !== expectedPaise || payment?.currency !== "INR") {
+    throw new Error("The payment details do not match this order. Please contact the store before trying again.");
+  }
+
+  if (payment.status === "authorized") {
+    try {
+      payment = await razorpayRequest(`payments/${encodeURIComponent(razorpayPaymentId)}/capture`, {
+        method: "POST",
+        body: JSON.stringify({ amount: expectedPaise, currency: "INR" }),
+      });
+    } catch {
+      // An auto-capture setting or retry may race this request. Re-fetch the payment
+      // and accept it only if Razorpay confirms that it is captured.
+      payment = await razorpayRequest(`payments/${encodeURIComponent(razorpayPaymentId)}`);
+    }
+  }
+
+  if (payment.status !== "captured") {
+    throw new Error("Razorpay has not confirmed a captured payment yet. Your order is not confirmed; contact the store if money was debited.");
+  }
+  if (order.payment_status === "paid" && order.razorpay_payment_id && order.razorpay_payment_id !== razorpayPaymentId) {
+    throw new Error("This order has already been paid using a different payment. Please contact the store.");
+  }
+
+  const previousStatus = order.status;
+  const updated = await patchOrder(order.id, {
+    status: "confirmed",
+    payment_method: "online",
+    payment_status: "paid",
+    razorpay_payment_id: razorpayPaymentId,
+    updated_at: new Date().toISOString(),
+  });
+
+  if (previousStatus !== "confirmed") {
+    await dbRequest("order_status_history", {
+      method: "POST",
+      headers: { Prefer: "return=minimal" },
+      body: JSON.stringify({ order_id: order.id, old_status: previousStatus, new_status: "confirmed" }),
+    }).catch(() => undefined);
+  }
+
+  return {
+    ok: true,
+    id: updated.id,
+    order_reference: updated.order_reference,
+    total: updated.total,
+    status: updated.status,
+    payment_method: updated.payment_method,
+    payment_status: updated.payment_status,
+    razorpay_payment_id: updated.razorpay_payment_id,
+  };
+}
+
 function json(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
     status,
@@ -310,6 +476,17 @@ Deno.serve(async (req: Request) => {
   }
 
   const action = body.action;
+  if (action === "verify_razorpay_payment") {
+    try {
+      return json(await verifyRazorpayPayment(body));
+    } catch (error) {
+      return json({
+        ok: false,
+        message: error instanceof Error ? error.message : "We couldn't verify the payment. Please contact the store.",
+      }, 400);
+    }
+  }
+
   if (action === "quote") {
     try {
       const branchId = body.branchId;
@@ -346,6 +523,8 @@ Deno.serve(async (req: Request) => {
     const items = body.items;
 
     if (kind !== "pickup" && kind !== "delivery") throw new Error("Please choose takeaway or delivery.");
+    const requestedPaymentMethod = body.paymentMethod === "online" ? "online" : (kind === "pickup" ? "cash_on_pickup" : "cash_on_delivery");
+    if (requestedPaymentMethod === "online") requireRazorpayCredentials();
     if (!isUuid(branchId)) throw new Error("Please select a valid store location.");
     if (!name || name.length > 150) throw new Error("Please enter your name.");
     const phoneDigits = phone.replace(/\D/g, "");
@@ -371,7 +550,7 @@ Deno.serve(async (req: Request) => {
       p_items: items,
       p_delivery_distance_km: quote?.distanceKm ?? null,
       p_delivery_charge: quote?.deliveryCharge ?? 0,
-      p_payment_method: kind === "pickup" ? "cash_on_pickup" : "cash_on_delivery",
+      p_payment_method: requestedPaymentMethod,
     };
 
     const response = await dbRequest("rpc/create_customer_order", {
@@ -386,6 +565,63 @@ Deno.serve(async (req: Request) => {
           ? result
           : "We could not record this order. Please check your details and retry.";
       throw new Error(message);
+    }
+
+    if (requestedPaymentMethod === "online") {
+      const internalOrderId = typeof result?.id === "string" ? result.id : "";
+      const reference = typeof result?.order_reference === "string" ? result.order_reference : internalOrderId;
+      const total = Number(result?.total);
+      const amountPaise = Math.round(total * 100);
+      if (!internalOrderId || !Number.isSafeInteger(amountPaise) || amountPaise <= 0) {
+        throw new Error("We couldn't prepare a valid order total for payment. Please contact the store.");
+      }
+
+      await patchOrder(internalOrderId, {
+        status: "pending",
+        payment_method: "online",
+        payment_status: "pending",
+        updated_at: new Date().toISOString(),
+      });
+
+      try {
+        const razorpayOrder = await razorpayRequest("orders", {
+          method: "POST",
+          body: JSON.stringify({
+            amount: amountPaise,
+            currency: "INR",
+            receipt: reference.slice(0, 40),
+            notes: { order_reference: reference, spidy_order_id: internalOrderId },
+          }),
+        });
+        if (typeof razorpayOrder?.id !== "string" || Number(razorpayOrder?.amount) !== amountPaise || razorpayOrder?.currency !== "INR") {
+          throw new Error("Razorpay returned an invalid payment order. Please retry or contact the store.");
+        }
+        await patchOrder(internalOrderId, {
+          razorpay_order_id: razorpayOrder.id,
+          updated_at: new Date().toISOString(),
+        });
+        return json({
+          ok: true,
+          ...result,
+          status: "pending",
+          payment_method: "online",
+          payment_status: "pending",
+          razorpay_key_id: RAZORPAY_KEY_ID,
+          razorpay_order_id: razorpayOrder.id,
+          razorpay_amount: amountPaise,
+          razorpay_currency: "INR",
+          distance_meters: quote?.distanceMeters ?? null,
+          delivery_distance_km: quote?.distanceKm ?? null,
+          distance_approximate: quote?.distanceApproximate ?? false,
+        });
+      } catch (paymentError) {
+        await patchOrder(internalOrderId, {
+          status: "cancelled",
+          payment_status: "failed",
+          updated_at: new Date().toISOString(),
+        }).catch(() => undefined);
+        throw paymentError;
+      }
     }
 
     return json({
