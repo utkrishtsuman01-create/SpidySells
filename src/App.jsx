@@ -460,7 +460,7 @@ export default function App(){
   const total=Number(order.total||0);
   const subtotal=Number(order.subtotal??total);
   const delivery=Number(order.delivery_charge||0);
-  const paymentMethod=order.payment_method==='online'?'Online payment (Razorpay)':order.payment_method==='cash_on_pickup'?'Pay at takeaway':'Not specified';
+  const paymentMethod=order.payment_method==='online'?'Online payment (Razorpay)':order.payment_method==='test_online'?'TEST PAYMENT — NO CHARGE':order.payment_method==='cash_on_pickup'?'Pay at takeaway':'Not specified';
   const paymentStatus=pretty(order.payment_status||'pending');
   const itemRows=items.map(item=>{
    const name=item.product_name_snapshot||item.name||'Item';
