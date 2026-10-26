@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin
 
-Sitemap: https://spidy-sells.vercel.app/sitemap.xml
+Sitemap: https://www.spidysells.com/sitemap.xml
