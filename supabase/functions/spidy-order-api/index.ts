@@ -34,7 +34,8 @@ const RAZORPAY_KEY_SECRET = (Deno.env.get("RAZORPAY_KEY_SECRET") ?? "").trim();
 
 function requireRazorpayCredentials() {
   if (!RAZORPAY_KEY_ID || !RAZORPAY_KEY_SECRET) {
-    throw new Error("Live online payments are not configured yet. The store owner must add RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in Supabase Edge Function secrets.");
+    console.error("Live Razorpay credentials are missing from Supabase Edge Function secrets.");
+    throw new Error("Online payments are not available just yet. Please choose another payment method or contact the store.");
   }
 }
 
