@@ -245,3 +245,11 @@
 .header-social-link:focus-visible{outline:3px solid #c59c5c;outline-offset:3px}
 @media(max-width:760px){.header-socials{gap:5px}.header-social-link{width:30px;height:30px}.header-social-link svg{width:16px;height:16px}}
 @media(max-width:420px){.header-socials{gap:4px}.header-social-link{width:27px;height:27px}.header-social-link svg{width:15px;height:15px}}
+
+/* Ensure social links remain visible in the live storefront header */
+.header-right{display:flex!important;align-items:center;justify-self:end;overflow:visible;}
+.header-socials{display:flex!important;visibility:visible!important;opacity:1!important;position:relative;z-index:5;align-items:center;gap:8px;flex:0 0 auto;}
+.header-social-link{display:grid!important;visibility:visible!important;opacity:1!important;flex:0 0 34px;position:relative;z-index:6;}
+.header-social-link svg{display:block!important;visibility:visible!important;opacity:1!important;}
+@media(max-width:760px){.header-socials{display:flex!important;gap:5px}.header-social-link{flex-basis:30px}}
+@media(max-width:420px){.header-socials{display:flex!important;gap:4px}.header-social-link{flex-basis:27px}}
