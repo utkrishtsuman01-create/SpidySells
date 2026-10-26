@@ -258,6 +258,7 @@ export default function App(){
  async function deleteReview(r){if(!window.confirm('Delete this review permanently?'))return;const {error}=await supabase.from('customer_reviews').delete().eq('id',r.id);if(error){setNotice(error.message);return}if(r.image_url){const path=r.image_url.split('/customer-review-images/')[1]?.split('?')[0];if(path)await supabase.storage.from('customer-review-images').remove([decodeURIComponent(path)])}setReviews(prev=>prev.filter(x=>x.id!==r.id))}
  async function refreshPublic(){
   if(!supabase)return;
+  refreshReviews();
   setStockLoaded(false);
   const [pr,br,se,st]=await Promise.all([
    supabase.from('products').select('*').eq('published',true).eq('available',true).order('created_at'),
