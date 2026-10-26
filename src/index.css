@@ -177,3 +177,10 @@
 .add-disabled,.add:disabled{justify-content:center;background:#eee6da!important;border-color:#e2d5c1!important;color:#8c7c67!important;cursor:not-allowed;opacity:1}
 .add:disabled:hover{background:#eee6da!important}
 @media(max-width:560px){.branch-stock-management{padding:10px 9px;gap:8px}.branch-stock-row{grid-template-columns:1fr;gap:7px}.stock-actions{justify-content:flex-start}.stock-choice{padding:8px 10px}.manage-card{align-items:flex-start}.manage-card-body{min-width:0}}
+
+
+/* Direct switch to another branch when a product is out of stock */
+.check-other-location-button{display:flex;width:100%;min-height:46px;align-items:center;justify-content:center;gap:9px;margin-top:9px;padding:13px 15px;border:1px solid #b18a4b;border-radius:3px;background:linear-gradient(135deg,#fffaf0,#f4e7ce);color:#674521;font-size:11px;font-weight:800;letter-spacing:.2px;text-align:center;box-shadow:0 3px 9px #4a2c1608;transition:background .2s,border-color .2s,transform .2s,box-shadow .2s}
+.check-other-location-button:hover:not(:disabled){transform:translateY(-1px);border-color:#8e6836;background:linear-gradient(135deg,#f8edd8,#ead5ac);box-shadow:0 5px 14px #4a2c1615}
+.check-other-location-button:focus-visible{outline:3px solid #c59c5c;outline-offset:3px}
+.check-other-location-button:disabled{cursor:wait;opacity:.55}
