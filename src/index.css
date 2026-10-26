@@ -184,3 +184,17 @@
 .check-other-location-button:hover:not(:disabled){transform:translateY(-1px);border-color:#8e6836;background:linear-gradient(135deg,#f8edd8,#ead5ac);box-shadow:0 5px 14px #4a2c1615}
 .check-other-location-button:focus-visible{outline:3px solid #c59c5c;outline-offset:3px}
 .check-other-location-button:disabled{cursor:wait;opacity:.55}
+
+
+/* Dedicated customer order-history page */
+.customer-orders-page{max-width:700px;padding-top:48px}
+.customer-orders-page>.kicker{margin-bottom:18px}
+.customer-orders-page>.lead{margin-bottom:28px}
+.customer-history-results-heading{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:30px 0 4px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.customer-history-results-heading h2{font:600 23px 'Playfair Display',serif;margin:0;color:var(--brown)}
+.customer-history-results-heading>span{font-size:10px;font-weight:700;letter-spacing:.6px;color:var(--muted)}
+.customer-history-empty{margin-top:22px;border:1px solid #e6d8c1;background:#fffdf9}
+.customer-history-empty p{font-size:12px;line-height:1.7;color:var(--muted)}
+.history-loading-dot{display:inline-block;width:8px;height:8px;margin-right:8px;border-radius:50%;background:var(--gold);animation:history-pulse 1s ease-in-out infinite alternate}
+@keyframes history-pulse{from{opacity:.35;transform:scale(.8)}to{opacity:1;transform:scale(1.1)}}
+@media(max-width:560px){.customer-orders-page{padding-top:32px}.customer-history-results-heading h2{font-size:20px}.customer-history-results-heading>span{font-size:9px}}
