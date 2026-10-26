@@ -393,6 +393,7 @@ export default function App(){
      amount:data.razorpay_amount,
      currency:data.razorpay_currency||'INR',
      name:'Spidy Sells',
+     image:spidySellsLogo,
      description:'Dessert order '+ref,
      order_id:data.razorpay_order_id,
      prefill:{name:customer.name.trim(),contact:customer.phone.trim()},
