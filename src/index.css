@@ -198,3 +198,41 @@
 .history-loading-dot{display:inline-block;width:8px;height:8px;margin-right:8px;border-radius:50%;background:var(--gold);animation:history-pulse 1s ease-in-out infinite alternate}
 @keyframes history-pulse{from{opacity:.35;transform:scale(.8)}to{opacity:1;transform:scale(1.1)}}
 @media(max-width:560px){.customer-orders-page{padding-top:32px}.customer-history-results-heading h2{font-size:20px}.customer-history-results-heading>span{font-size:9px}}
+
+
+/* Global header contact menu — visible on every storefront and admin page */
+.header-right{position:relative;gap:12px;min-width:0}
+.contact-menu-wrap{position:relative;display:flex;align-items:center;flex-shrink:0}
+.contact-trigger{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:36px;padding:8px 11px;border:1px solid #d8c196;border-radius:4px;background:#fffaf0;color:#684925;font-size:10px;font-weight:800;letter-spacing:.35px;white-space:nowrap;box-shadow:0 2px 8px #4a2c1608;transition:background .18s,border-color .18s,transform .18s}
+.contact-trigger:hover,.contact-trigger-open{background:#f4e7ce;border-color:#b18a4b}
+.contact-trigger:hover{transform:translateY(-1px)}
+.contact-trigger>svg:first-child{color:#a47738}
+.contact-chevron{transition:transform .18s}
+.contact-trigger-open .contact-chevron{transform:rotate(180deg)}
+.contact-popover{position:absolute;z-index:1200;top:calc(100% + 10px);right:0;width:min(270px,calc(100vw - 28px));padding:7px;border:1px solid #dfcda9;border-radius:7px;background:#fffdf8;box-shadow:0 16px 40px #2b211b24;animation:contact-pop-in .15s ease-out}
+.contact-popover::before{content:"";position:absolute;right:22px;top:-5px;width:8px;height:8px;transform:rotate(45deg);border-top:1px solid #dfcda9;border-left:1px solid #dfcda9;background:#fffdf8}
+.contact-action{position:relative;display:flex;align-items:center;gap:10px;width:100%;padding:11px 9px;border-radius:4px;color:var(--brown);text-decoration:none;transition:background .15s}
+.contact-action:hover{background:#f8f0e1}
+.contact-action+.contact-action{border-top:1px solid #eee4d2}
+.contact-action-icon{width:33px;height:33px;display:grid;place-items:center;flex:0 0 33px;border:1px solid #e4d4b7;border-radius:50%;background:#f5ecdc;color:#8e6532}
+.contact-action>span:nth-child(2){display:grid;gap:3px;min-width:0;flex:1}
+.contact-action b{font-size:11px;line-height:1.3;font-weight:800}
+.contact-action small{font-size:9px;line-height:1.4;color:var(--muted);overflow-wrap:anywhere}
+.contact-action-arrow{color:#b18a4b;flex:0 0 auto}
+.contact-whatsapp .contact-action-icon{background:#edf5e9;border-color:#d8e8ce;color:#347748}
+@keyframes contact-pop-in{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:760px){
+ .header-right{gap:7px}
+ .contact-trigger{min-height:34px;padding:7px 9px;gap:5px;font-size:9px}
+ .contact-trigger>svg:first-child{width:13px;height:13px}
+ .contact-trigger .contact-chevron{width:10px;height:10px}
+ .contact-popover{top:calc(100% + 8px)}
+}
+@media(max-width:380px){
+ .contact-trigger{padding:7px 7px;gap:4px;font-size:8px}
+ .header-right{gap:6px}
+}
+@media(prefers-reduced-motion:reduce){
+ .contact-trigger,.contact-chevron,.contact-action{transition:none}
+ .contact-popover{animation:none}
+}
