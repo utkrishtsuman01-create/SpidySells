@@ -244,9 +244,8 @@ async function deliveryAllowed(): Promise<boolean> {
 }
 
 function deliveryFeeFromMeters(distanceMeters: number): number {
-  if (distanceMeters <= 10_000) return 60;
-  if (distanceMeters <= 20_000) return 90;
-  return 90 + Math.ceil((distanceMeters - 20_000) / 1_000) * 3;
+  // ₹15 per kilometre, rounded up to the nearest whole rupee.
+  return Math.ceil((distanceMeters / 1_000) * 15);
 }
 
 function normalizePostcode(value: unknown): string {
