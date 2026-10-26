@@ -46,10 +46,10 @@ function SpiderWelcomeIntro({onSkip}){
   <div className="spider-intro-wash" aria-hidden="true"/>
   <svg className="spider-intro-web" viewBox="0 0 1000 1000" aria-hidden="true">
    <g className="spider-web-spokes">
-    {spokes.map(({x,y,index})=><path key={index} className="spider-web-spoke" pathLength="1" style={{animationDelay:(3.48+index*0.022)+'s'}} d={`M 500 500 L ${x.toFixed(2)} ${y.toFixed(2)}`}/>)}
+    {spokes.map(({x,y,index})=><path key={index} className="spider-web-spoke" pathLength="1" style={{animationDelay:(0.12+index*0.012)+'s'}} d={`M 500 500 L ${x.toFixed(2)} ${y.toFixed(2)}`}/>)}
    </g>
    <g className="spider-web-rings">
-    {rings.map((radius,index)=><circle key={radius} className="spider-web-ring" pathLength="1" style={{animationDelay:(3.52+index*0.105)+'s'}} cx="500" cy="500" r={radius}/>)}
+    {rings.map((radius,index)=><circle key={radius} className="spider-web-ring" pathLength="1" style={{animationDelay:(0.18+index*0.045)+'s'}} cx="500" cy="500" r={radius}/>)}
     {Array.from({length:8},(_,index)=>{
      const angle=(-Math.PI/2)+(index*Math.PI/4);
      const x=500+Math.cos(angle)*378;
@@ -58,7 +58,7 @@ function SpiderWelcomeIntro({onSkip}){
      const y2=500+Math.sin(angle+Math.PI/4)*378;
      const qx=500+Math.cos(angle+Math.PI/8)*300;
      const qy=500+Math.sin(angle+Math.PI/8)*300;
-     return <path key={'bridge-'+index} className="spider-web-bridge" pathLength="1" style={{animationDelay:(3.7+index*0.07)+'s'}} d={`M ${x.toFixed(2)} ${y.toFixed(2)} Q ${qx.toFixed(2)} ${qy.toFixed(2)} ${x2.toFixed(2)} ${y2.toFixed(2)}`}/>;
+     return <path key={'bridge-'+index} className="spider-web-bridge" pathLength="1" style={{animationDelay:(0.24+index*0.025)+'s'}} d={`M ${x.toFixed(2)} ${y.toFixed(2)} Q ${qx.toFixed(2)} ${qy.toFixed(2)} ${x2.toFixed(2)} ${y2.toFixed(2)}`}/>;
     })}
    </g>
    <circle className="spider-web-dew" cx="500" cy="500" r="5"/>
@@ -123,7 +123,7 @@ export default function App(){
  useEffect(()=>{
   if(!introPlaying)return;
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){finishIntro();return}
-  const timer=window.setTimeout(finishIntro,6350);
+  const timer=window.setTimeout(finishIntro,4000);
   return()=>window.clearTimeout(timer);
  },[introPlaying]);
  useEffect(()=>{
