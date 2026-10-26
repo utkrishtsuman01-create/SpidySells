@@ -450,7 +450,7 @@ export default function App(){
  function printReceipt(order){
   if(!order){setNotice('Order details are unavailable for this receipt.');return}
   const esc=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-  const items=Array.isArray(order.items)?order.items:[];
+  const items=Array.isArray(order.items)?order.items:(Array.isArray(order.order_items)?order.order_items:[]);
   const amount=value=>rupees(value);
   const total=Number(order.total||0);
   const subtotal=Number(order.subtotal??total);
