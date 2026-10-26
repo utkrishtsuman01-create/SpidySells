@@ -16,6 +16,7 @@ export default defineConfig({
         bag: htmlEntry('./bag.html'),
         checkout: htmlEntry('./checkout.html'),
         orderConfirmation: htmlEntry('./order-confirmation.html'),
+        orderHistory: htmlEntry('./orders.html'),
         admin: htmlEntry('./admin.html')
       },
       output: {
