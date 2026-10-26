@@ -258,4 +258,3 @@
 .receipt-actions{display:grid;gap:8px;margin-top:18px}
 .receipt-actions .primary{width:100%;justify-content:center}
 .receipt-print-button{display:inline-flex;align-items:center;gap:5px;margin-top:7px;padding:7px 9px;white-space:nowrap;font-size:10px}
-@media print{body *{visibility:hidden}}
