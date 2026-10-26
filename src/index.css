@@ -236,3 +236,12 @@
  .contact-trigger,.contact-chevron,.contact-action{transition:none}
  .contact-popover{animation:none}
 }
+
+/* Social profile links in the site header */
+.header-socials{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.header-social-link{width:34px;height:34px;display:grid;place-items:center;border:1px solid #dfceb5;border-radius:50%;color:var(--brown);background:#fffdf8;transition:background .18s,color .18s,border-color .18s,transform .18s}
+.header-social-link svg{display:block;width:18px;height:18px}
+.header-social-link:hover{transform:translateY(-1px);background:var(--brown);color:#fff9ef;border-color:var(--brown)}
+.header-social-link:focus-visible{outline:3px solid #c59c5c;outline-offset:3px}
+@media(max-width:760px){.header-socials{gap:5px}.header-social-link{width:30px;height:30px}.header-social-link svg{width:16px;height:16px}}
+@media(max-width:420px){.header-socials{gap:4px}.header-social-link{width:27px;height:27px}.header-social-link svg{width:15px;height:15px}}
