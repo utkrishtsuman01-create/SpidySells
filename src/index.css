@@ -253,3 +253,9 @@
 .header-social-link svg{display:block!important;visibility:visible!important;opacity:1!important;}
 @media(max-width:760px){.header-socials{display:flex!important;gap:5px}.header-social-link{flex-basis:30px}}
 @media(max-width:420px){.header-socials{display:flex!important;gap:4px}.header-social-link{flex-basis:27px}}
+
+/* Compact thermal receipt actions */
+.receipt-actions{display:grid;gap:8px;margin-top:18px}
+.receipt-actions .primary{width:100%;justify-content:center}
+.receipt-print-button{display:inline-flex;align-items:center;gap:5px;margin-top:7px;padding:7px 9px;white-space:nowrap;font-size:10px}
+@media print{body *{visibility:hidden}}
