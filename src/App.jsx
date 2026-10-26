@@ -360,7 +360,7 @@ export default function App(){
   if(!supabase){setNotice('Ordering is not connected yet. Configure Supabase before accepting real orders.');return}
   if(kind==='delivery'&&!settings.delivery_enabled){setNotice('Online delivery is not enabled yet. Please choose takeaway.');return}
   if(kind==='delivery'&&!matchingDeliveryQuote){setNotice(quoteError||(quoteBusy?'Please wait while we calculate the delivery charge.':'Enter your full delivery address so we can calculate the delivery charge.'));return}
-  if(kind==='delivery'&&paymentMethod!=='online'){setPaymentMethod('online');setNotice('Online delivery orders require online payment. Cash on delivery is not available at any branch.');return}
+  if(kind==='delivery'&&paymentMethod!=='online'&&paymentMethod!=='test_online'){setPaymentMethod('online');setNotice('Online delivery orders require online payment. Cash on delivery is not available at any branch.');return}
   setBusy(true);
   let razorpayModalOpen=false;
   try{
