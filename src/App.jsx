@@ -17,6 +17,14 @@ const stockMapKey = (productId, branchId) => `${productId}:${branchId}`;
 const routeToPage = {'/':'location','/order-type':'type','/menu':'menu','/bag':'cart','/checkout':'checkout','/order-confirmation':'success','/orders':'history','/admin':'owner'};
 const pageToRoute = {location:'/',type:'/order-type',menu:'/menu',cart:'/bag',checkout:'/checkout',success:'/order-confirmation',history:'/orders',owner:'/admin',admin:'/admin'};
 
+async function functionErrorMessage(error){
+ const context=error?.context;
+ if(context&&typeof context.clone==='function'){
+  try{const payload=await context.clone().json();if(typeof payload?.message==='string'&&payload.message.trim())return payload.message}catch{}
+ }
+ return error?.message||'The server could not process this request. Please try again.';
+}
+
 function loadRazorpayCheckout(){
  if(window.Razorpay)return Promise.resolve();
  return new Promise((resolve,reject)=>{
@@ -373,7 +381,7 @@ export default function App(){
    const isOnlinePayment=paymentMethod==='online';
    if(isOnlinePayment)await loadRazorpayCheckout();
    const {data,error}=await supabase.functions.invoke('spidy-order-api',{body:{action:'place_order',kind,branchId:selectedBranch,name:customer.name.trim(),phone:customer.phone.trim(),address:kind==='delivery'?customer.address.trim():null,notes:customer.notes.trim()||null,items:cart.map(i=>({product_id:i.id,quantity:i.qty})),paymentMethod:isOnlinePayment?'online':'cash_on_pickup'}});
-   if(error)throw error;
+   if(error)throw new Error(await functionErrorMessage(error));
    if(!data?.ok)throw new Error(data?.message||'We could not record this order. Please retry.');
    const ref=data.order_reference||data.id;
    const itemSnapshot=cart.map(i=>({product_id:i.id,product_name_snapshot:i.name,quantity:i.qty,unit_price:i.price,line_total:i.price*i.qty}));
