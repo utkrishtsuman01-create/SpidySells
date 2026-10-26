@@ -293,6 +293,7 @@ export default function App(){
   if(kind==='delivery'&&!settings.delivery_enabled){setNotice('Online delivery is not enabled yet. Please choose takeaway.');return}
   if(kind==='delivery'&&!matchingDeliveryQuote){setNotice(quoteError||(quoteBusy?'Please wait while we calculate the delivery charge.':'Enter your full delivery address so we can calculate the delivery charge.'));return}
   setBusy(true);
+  let razorpayModalOpen=false;
   try{
    const isOnlinePayment=paymentMethod==='online';
    if(isOnlinePayment)await loadRazorpayCheckout();
@@ -315,6 +316,7 @@ export default function App(){
      notes:{order_reference:ref},
      theme:{color:'#B18A4B'},
      modal:{ondismiss:()=>{
+      razorpayModalOpen=false;
       if(!paymentHandlerStarted){setBusy(false);setNotice('Payment window closed. Your order is not confirmed yet; choose Place order when you are ready to try again.')}
      }},
      handler:async response=>{
@@ -335,15 +337,17 @@ export default function App(){
     });
     gateway.on('payment.failed',response=>{
      if(paymentHandlerStarted)return;
+     razorpayModalOpen=false;
      setBusy(false);
      setNotice(response?.error?.description||'The payment was not completed. If your bank shows a debit, please contact the store before trying again.');
     });
+    razorpayModalOpen=true;
     gateway.open();
     return;
    }
    const placed={...data,customer_phone:customer.phone.trim(),customer_name:customer.name.trim(),order_type:kind==='pickup'?'TAKEAWAY':'ONLINE DELIVERY',delivery_address:kind==='delivery'?customer.address.trim():null,branch_id:selectedBranch,branch_name:branches.find(b=>b.id===selectedBranch)?.name||'Selected location',branch_address:branches.find(b=>b.id===selectedBranch)?.address||'',items:data.items||itemSnapshot,status:data.status||'confirmed',payment_method:kind==='pickup'?'cash_on_pickup':'cash_on_delivery',payment_status:data.payment_status||'pending'};
    setOrderRef(ref);setOrderDetails(placed);setActiveOrder(placed);window.localStorage.setItem('spidy_active_order',JSON.stringify({order_reference:ref,customer_phone:customer.phone.trim()}));setPage('success');setNotice('');setCart([]);
-  }catch(err){setNotice(err.message||'We could not record this order. Please retry.')}finally{setBusy(false)}
+  }catch(err){setNotice(err.message||'We could not record this order. Please retry.')}finally{if(!razorpayModalOpen)setBusy(false)}
  }
  async function login(e){e.preventDefault();if(!supabase){setNotice('Supabase is not configured. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.');return}setBusy(true);const email=e.currentTarget.email.value.trim();const {data,error}=await supabase.auth.signInWithPassword({email,password:e.currentTarget.password.value});if(error){setBusy(false);setNotice(error.message);return}const {data:admin,error:adminError}=await supabase.from('admin_users').select('user_id').eq('user_id',data.user.id).maybeSingle();if(adminError||!admin){await supabase.auth.signOut();setBusy(false);setNotice('This account is not approved for the admin panel yet.');return}setBusy(false);setNotice('');setSession(data.session);setPage('admin');await loadAdminData()}
  async function logout(){await supabase?.auth.signOut();setSession(null);setPage('location')}
