@@ -1528,30 +1528,30 @@ html, body, body .site, body .site .site-content {
 .site .form select { font-size: 13px !important; }
 
 
-/* HEADER MOTTO CONTRAST FIX — replace the inherited white gradient, not just its background colour. */
+/* Restore the original soft white gradient for the Spidy Standard motto; adjust text colours only. */
 .header .header-motto {
-  background: linear-gradient(110deg, #18263a 0%, #0d1b30 54%, #332b25 100%) !important;
-  border-top: 1px solid #c29a53 !important;
-  border-bottom: 1px solid #c29a53 !important;
-  box-shadow: inset 0 0 0 1px rgba(255, 226, 169, .08) !important;
+  background: linear-gradient(90deg, transparent 0%, #fffdfa 15%, #fffdfa 85%, transparent 100%) !important;
+  border-top: 1px solid #d8bfc5 !important;
+  border-bottom: 1px solid #d8bfc5 !important;
+  box-shadow: none !important;
 }
 .header .header-motto .motto-eyebrow {
-  color: #f0ca80 !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, .75) !important;
+  color: #79552f !important;
+  text-shadow: none !important;
 }
 .header .header-motto .motto-line {
-  color: #fff5e5 !important;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, .8) !important;
+  color: #302229 !important;
+  text-shadow: none !important;
   font-weight: 700 !important;
 }
 .header .header-motto .motto-line em {
-  color: #f3c978 !important;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, .8) !important;
+  color: #8a5b22 !important;
+  text-shadow: none !important;
 }
 .header .header-motto .motto-star {
-  background: #142239 !important;
-  color: #f3c978 !important;
+  background: transparent !important;
+  color: #9a7138 !important;
 }
 .header .header-motto .motto-rule {
-  background: linear-gradient(90deg, transparent, #f0ca80) !important;
+  background: linear-gradient(90deg, transparent, #b18a4b) !important;
 }
