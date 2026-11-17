@@ -876,3 +876,170 @@ body, .site {
 @media(prefers-reduced-motion:reduce) {
   .header-social-link { transition: none !important; }
 }
+
+
+/* LIGHT BLUE CANVAS + PREMIUM GOLD/RED CARD PALETTE */
+:root {
+  color-scheme: light;
+  background: #eaf3fb;
+  --cream: #eaf3fb;
+  --line: #d6e3ee;
+}
+html, body, body .site {
+  background: #eaf3fb !important;
+}
+.site {
+  color: #24191e !important;
+}
+.header, .store-nav, .footer {
+  background: #f3f8fc !important;
+  border-color: #d6e3ee !important;
+}
+.header-motto,
+.header-motto .motto-star {
+  background-color: #f3f8fc !important;
+}
+.store-nav a, .store-nav button {
+  color: #3c3037 !important;
+}
+.footer {
+  color: #302229 !important;
+}
+
+/* Gold-and-red finishes for the existing cards.
+   Geometry, spacing, borders, shadows and layout are intentionally preserved. */
+.spider-product-card {
+  background: linear-gradient(145deg, #6b1c31 0%, #8b452f 54%, #a8793d 100%) !important;
+  border-color: #c69a50 !important;
+}
+.spider-product-heading h3 { color: #fffaf0 !important; }
+.spider-product-heading > b { color: #ffe0a1 !important; }
+.spider-product-info > p { color: #f4e7d5 !important; }
+.spider-size-picker { color: #fff0d6 !important; }
+.spider-size-picker select {
+  background: #361522 !important;
+  color: #fffaf0 !important;
+  border-color: #c69a50 !important;
+}
+.spider-product-photo > span {
+  background: #3d1421ed !important;
+  border-color: #d7ad62 !important;
+  color: #ffe0a1 !important;
+}
+
+/* Supporting feature cards */
+.spider-why-section {
+  background: linear-gradient(135deg, #641a2d 0%, #8c4b31 55%, #b08748 100%) !important;
+  border-color: #c89f5b !important;
+}
+.spider-why-section h2 { color: #fffaf0 !important; }
+.spider-why-grid article {
+  background: linear-gradient(145deg, #4f1728 0%, #762d32 58%, #936638 100%) !important;
+  border-color: #c89f5b !important;
+}
+.spider-why-grid article > b { color: #f5d58e !important; }
+.spider-why-grid h3 { color: #fffaf0 !important; }
+.spider-why-grid p { color: #f1e3d0 !important; }
+
+.spider-review-card {
+  background: linear-gradient(145deg, #531728 0%, #792b34 58%, #916539 100%) !important;
+  border-color: #c89f5b !important;
+}
+.spider-review-card .spider-stars { color: #ffdf91 !important; }
+.spider-review-card p { color: #f5e8d8 !important; }
+.spider-review-card > b { color: #fffaf0 !important; }
+.spider-review-card small { color: #f1d9b4 !important; }
+
+.spider-about-section,
+.spider-about-story {
+  background: linear-gradient(125deg, #5c182b 0%, #7a3036 56%, #987044 100%) !important;
+  border-color: #c69a50 !important;
+}
+.spider-about-section h2,
+.spider-about-story h2 { color: #fffaf0 !important; }
+.spider-about-section > div:last-child > p,
+.spider-about-story p { color: #f3e5d5 !important; }
+
+.spider-home-contact {
+  background: linear-gradient(120deg, #651a2e 0%, #873c37 58%, #a47a45 100%) !important;
+  border-color: #c99e59 !important;
+}
+.spider-home-contact h2 { color: #fffaf0 !important; }
+.spider-home-contact p { color: #f4e5d5 !important; }
+
+.spider-branch-hours-card {
+  background: linear-gradient(135deg, #5d182b 0%, #7d3534 62%, #987043 100%) !important;
+  border-color: #c99f5b !important;
+}
+.spider-branch-label { color: #fffaf0 !important; }
+.spider-branch-open { color: #ffe0a1 !important; }
+.spider-branch-address { color: #f0dfc8 !important; }
+.spider-branch-hours-line { color: #fff5e8 !important; }
+.spider-branch-pin {
+  background: #3d1422 !important;
+  border-color: #d1a85f !important;
+  color: #ffe0a1 !important;
+}
+
+.spider-bulk-section {
+  background: linear-gradient(120deg, #5b172b 0%, #873a34 54%, #a77b43 100%) !important;
+  border-color: #c99e59 !important;
+}
+.spider-bulk-copy h2 { color: #fffaf0 !important; }
+.spider-bulk-copy > p { color: #f2e2d0 !important; }
+.spider-bulk-stats b { color: #ffe0a1 !important; }
+.spider-bulk-stats small { color: #fff0db !important; }
+.spider-bulk-preview {
+  background: linear-gradient(145deg, #421523 0%, #6d202f 100%) !important;
+  border-color: #d2a75e !important;
+  box-shadow: 10px 10px 0 #a8793d !important;
+}
+.spider-bulk-preview small,
+.spider-bulk-preview > b,
+.spider-bulk-preview footer { color: #ffdc91 !important; }
+.spider-bulk-preview > span,
+.spider-bulk-preview > em { color: #f5e6d3 !important; }
+
+.spider-support-cards > a,
+.spider-support-cards > button,
+.spider-contact-branches article,
+.spider-other-location {
+  background: linear-gradient(145deg, #5a182b 0%, #7b3034 58%, #93663c 100%) !important;
+  border-color: #c99f5b !important;
+}
+.spider-support-cards b,
+.spider-contact-branches h2,
+.spider-other-location > b { color: #fffaf0 !important; }
+.spider-support-cards span,
+.spider-contact-branches p,
+.spider-contact-branches span,
+.spider-other-location p { color: #f0e1cf !important; }
+.spider-support-cards strong,
+.spider-contact-branches small,
+.spider-other-location a { color: #ffdf94 !important; }
+
+/* The three-part promise strip becomes a clear premium-gold band with black lettering. */
+.spider-promise {
+  background: linear-gradient(100deg, #bd8d3d 0%, #e6c77f 48%, #c99b4e 100%) !important;
+  border-color: #a9792f !important;
+}
+.spider-promise span {
+  color: #17120b !important;
+  border-right-color: #8c642b !important;
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  letter-spacing: .15px !important;
+}
+.spider-promise b {
+  color: #17120b !important;
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-weight: 700 !important;
+}
+@media(max-width:650px) {
+  .spider-promise span {
+    color: #17120b !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+  }
+}
