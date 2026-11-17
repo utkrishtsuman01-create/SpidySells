@@ -479,3 +479,172 @@ html{scroll-behavior:smooth;scroll-padding-top:120px}body,.site{background:#0909
 
 /* Active admin tab remains bright against the dark dashboard */
 .site .admin-tabs button.selected{color:#fff!important}
+
+
+/* SITE-WIDE READABILITY FIX — final contrast and control visibility pass */
+.site,
+.site main,
+.site section,
+.site article,
+.site aside,
+.site nav,
+.site footer,
+.site header { color: #f5f1f3; }
+
+/* Cart quantity controls: make both symbols unmistakable on the dark theme. */
+.site .qty { gap: 12px; }
+.site .qty button {
+  display: inline-grid !important;
+  place-items: center !important;
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px;
+  padding: 0 !important;
+  border: 1px solid #ff647b !important;
+  border-radius: 4px !important;
+  background: #df1b38 !important;
+  color: #ffffff !important;
+  opacity: 1 !important;
+  box-shadow: 0 2px 8px #0005;
+}
+.site .qty button svg {
+  width: 16px;
+  height: 16px;
+  stroke: #ffffff !important;
+  color: #ffffff !important;
+  stroke-width: 2.8;
+}
+.site .qty button:hover,
+.site .qty button:focus-visible {
+  background: #ff3653 !important;
+  border-color: #ff9aaa !important;
+}
+.site .qty button:disabled {
+  background: #4a2630 !important;
+  border-color: #87505d !important;
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+.site .qty span {
+  min-width: 18px;
+  color: #ffffff !important;
+  font-weight: 800;
+  text-align: center;
+}
+
+/* Readable text on every known light/data surface, including nested content. */
+.site .payment-option,
+.site .stats-grid > div,
+.site .table-wrap,
+.site .table-wrap table,
+.site .table-wrap th,
+.site .table-wrap td,
+.site .manage-card,
+.site .manage-card-body,
+.site .setup-card,
+.site .customer-history-empty,
+.site .home-active-order,
+.site .branch-stock-management,
+.site .admin-form,
+.site .admin-form label,
+.site .admin-form p,
+.site .admin-form small {
+  color: #171217;
+}
+.site .payment-option *,
+.site .stats-grid > div *,
+.site .table-wrap *,
+.site .manage-card *,
+.site .setup-card *,
+.site .customer-history-empty *,
+.site .home-active-order *,
+.site .branch-stock-management *,
+.site .admin-form * {
+  text-shadow: none;
+}
+.site .payment-option small,
+.site .stats-grid > div small,
+.site .table-wrap td small,
+.site .manage-card-body > small,
+.site .setup-card p,
+.site .setup-card li,
+.site .customer-history-empty p,
+.site .home-active-order small,
+.site .branch-stock-label small,
+.site .admin-form small {
+  color: #51464b !important;
+}
+.site .table-wrap th {
+  background: #f4ecdf !important;
+  color: #51464b !important;
+}
+.site .table-wrap td {
+  background: #fffdf9;
+  color: #171217 !important;
+}
+.site .table-wrap td a { color: #8a2038 !important; }
+.site .table-wrap select,
+.site .table-wrap select option,
+.site .admin-form input:not([type="checkbox"]),
+.site .admin-form textarea,
+.site .admin-form select,
+.site .admin-form select option {
+  background: #fffdf9 !important;
+  color: #171217 !important;
+  -webkit-text-fill-color: #171217 !important;
+  border-color: #a998a0 !important;
+}
+.site .admin-form input::placeholder,
+.site .admin-form textarea::placeholder {
+  color: #655960 !important;
+  -webkit-text-fill-color: #655960 !important;
+  opacity: 1 !important;
+}
+
+/* Text and icons on dark panels must remain bright, including nested SVG icons. */
+.site .cart-row,
+.site .cart-branch-select,
+.site .cart-selected-branch,
+.site .bulk-modal,
+.site .spider-bulk-modal,
+.site .contact-popover,
+.site .review-modal,
+.site .summary,
+.site .form,
+.site .selected-branch-summary {
+  color: #f5f1f3;
+}
+.site .cart-row svg,
+.site .cart-branch-select svg,
+.site .cart-selected-branch svg,
+.site .bulk-modal svg,
+.site .spider-bulk-modal svg,
+.site .contact-popover svg {
+  color: currentColor;
+}
+.site .cart-row .qty svg { color: #fff !important; }
+
+/* Keep low-emphasis copy readable without changing the established dark palette. */
+.site .lead,
+.site .fine-print,
+.site .content p,
+.site .content small,
+.site .content label,
+.site .content .back,
+.site .spider-content-page .lead,
+.site .spider-products-page .lead {
+  text-shadow: none;
+}
+.site input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="hidden"]),
+.site textarea,
+.site select {
+  font-size: max(13px, 1em);
+}
+.site input:focus-visible,
+.site textarea:focus-visible,
+.site select:focus-visible,
+.site button:focus-visible,
+.site a:focus-visible {
+  outline: 3px solid #ff9aaa !important;
+  outline-offset: 3px !important;
+}
