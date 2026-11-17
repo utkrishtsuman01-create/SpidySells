@@ -383,3 +383,17 @@ html{scroll-behavior:smooth;scroll-padding-top:120px}body,.site{background:#0909
 .payment-option{color:#171217!important}
 .payment-option span,.payment-option b{color:#171217!important}
 .payment-option small{color:#5b5357!important}
+
+
+/* Admin dashboard: dark readable text on its light metric cards and order table */
+.admin-page .stats-grid>div{color:#171217!important}
+.admin-page .stats-grid small{color:#6b5e65!important}
+.admin-page .stats-grid b{color:#171217!important}
+.admin-page .table-wrap{color:#171217!important}
+.admin-page .table-wrap td,
+.admin-page .table-wrap td b,
+.admin-page .table-wrap td span,
+.admin-page .table-wrap td a{color:#171217!important}
+.admin-page .table-wrap td small{color:#655960!important}
+.admin-page .table-wrap td select{background:#fffdf9!important;color:#171217!important;border-color:#d4c5b7!important}
+.admin-page .table-wrap td select option{background:#fffdf9;color:#171217}
