@@ -1053,3 +1053,95 @@ html, body, body .site {
     linear-gradient(118deg, #59402f 0%, #7b2937 48%, #351321 100%) !important;
   border-color: #bd914d !important;
 }
+
+
+/* PREMIUM FOREST-GREEN PAGE CANVAS — preserve all gold/red card treatments */
+:root {
+  color-scheme: dark;
+  background: #0c241b;
+  --cream: #0c241b;
+}
+html, body, body .site {
+  background: #0c241b !important;
+  color: #f5f0e4 !important;
+}
+.site {
+  background: #0c241b !important;
+  color: #f5f0e4 !important;
+}
+.site:before { display: none !important; }
+
+/* Coordinated green header, navigation and footer; card styling remains as-is. */
+.header, .store-nav, .footer {
+  background: #102b20 !important;
+  border-color: #37533e !important;
+  color: #f5f0e4 !important;
+}
+.header .brand { color: #fff8e9 !important; }
+.header-motto,
+.header-motto .motto-star {
+  background-color: #102b20 !important;
+}
+.header-motto {
+  border-top-color: #b28b48 !important;
+  border-bottom-color: #b28b48 !important;
+}
+.header-motto .motto-line { color: #fff6e7 !important; }
+.header-motto .motto-line em { color: #e0bd76 !important; }
+.header-motto .motto-eyebrow { color: #e0bd76 !important; }
+.header-motto .motto-rule { background: #c59a50 !important; }
+.store-nav a, .store-nav button { color: #f0e6d2 !important; }
+.store-nav a:hover, .store-nav button:hover { color: #e4bd70 !important; }
+.footer { color: #f5f0e4 !important; }
+.footer p, .footer .copyright { color: #c8c1b0 !important; }
+.footer-nav a { color: #f0dfba !important; }
+.footer-nav a:hover { color: #e5bd70 !important; }
+.footer-phone-link { color: #eadfc9 !important; }
+
+/* Keep non-card page headings and copy readable against the dark green canvas. */
+.spider-home, .store-inner-page { color: #f5f0e4 !important; }
+.spider-section-title h2,
+.spider-home .spider-section-title h2 { color: #fff8eb !important; }
+.spider-section-title p,
+.spider-home .spider-section-title p { color: #d4cbbb !important; }
+.spider-home .spider-text-link { color: #e5c27d !important; }
+.site .content > h1,
+.site .store-inner-page > h1,
+.site .admin-page .admin-heading h1,
+.site .spider-cart-page > h1 {
+  color: #fff7e8 !important;
+}
+.site .content > h1 em,
+.site .store-inner-page > h1 em,
+.site .admin-page .admin-heading h1 em,
+.site .spider-cart-page > h1 em {
+  color: #e2b86b !important;
+}
+.site .content > .lead,
+.site .content > .fine-print,
+.site .store-inner-page > .lead {
+  color: #d1c8b8 !important;
+}
+.site .content > .kicker,
+.site .store-inner-page > .kicker { color: #e1bb70 !important; }
+.site .content > .back,
+.site .store-inner-page > .back { color: #e0d7c7 !important; }
+.site .content > .back:hover,
+.site .store-inner-page > .back:hover { color: #f2c978 !important; }
+.site .section-heading h2 { color: #fff7e8 !important; }
+.site .admin-tabs button { color: #d7cebf !important; }
+.site .admin-tabs button.selected { color: #f1ca7b !important; }
+.site .spider-cart-page .total,
+.site .spider-cart-page .total span,
+.site .spider-cart-page .total b { color: #fff6e7 !important; }
+
+/* Keep social platform marks in their original brand colours. */
+.header-social-link, .footer-social-icon {
+  background: #fdfbf5 !important;
+  border-color: #c7b68f !important;
+}
+.header-social-link.instagram-link:hover,
+.header-social-link.facebook-link:hover,
+.header-social-link.whatsapp-link:hover {
+  background: #fdfbf5 !important;
+}
