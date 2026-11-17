@@ -1328,3 +1328,95 @@ html, body, body .site, body .site .site-content {
 .header-social-link.whatsapp-link:hover {
   background: #fdfbf5 !important;
 }
+
+
+/* SITE-WIDE CONTRAST AUDIT — text colours tuned for the navy canvas and existing red/gold panels. */
+
+/* General dark-page copy and the small location-page captions. */
+.site .hero .kicker { color: #f0ca80 !important; }
+.site .hero-foot { color: #ded2bf !important; }
+.site .header .brand small,
+.site .footer-brand small { color: #e8c77f !important; }
+
+/* Hero text sits over a variable red-to-gold gradient, so use bright type with a soft shadow. */
+.spider-hero .spider-kicker { color: #ffe0a1 !important; text-shadow: 0 1px 2px rgba(28, 8, 12, .7); }
+.spider-hero h1 { color: #fffaf0 !important; text-shadow: 0 1px 3px rgba(24, 7, 12, .38); }
+.spider-hero h1 em { color: #ffe0a1 !important; }
+.spider-hero-copy > p { color: #fff2df !important; text-shadow: 0 1px 2px rgba(28, 8, 12, .55); }
+.spider-hero-meta { color: #f5e8d3 !important; text-shadow: 0 1px 2px rgba(28, 8, 12, .55); }
+.spider-slider { color: #f3dfc0 !important; }
+.spider-slider > span:first-child { color: #fffaf0 !important; }
+
+/* Keep highlighted heading words antique-gold rather than the old low-contrast pink. */
+.spider-section-title h2 em,
+.spider-why-section h2 em,
+.spider-bulk-copy h2 em,
+.spider-about-section h2 em,
+.spider-about-story h2 em,
+.spider-home-contact h2 em,
+.spider-content-page h1 em,
+.spider-products-page h1 em { color: #ffe0a1 !important; }
+
+.spider-kicker { color: #f4d18b !important; }
+.spider-text-link,
+.spider-home .spider-text-link { color: #f2ce86 !important; }
+.spider-home .spider-text-link:hover { color: #fff0ca !important; }
+.spider-section-title p { color: #eee3d1 !important; }
+
+/* Accents and secondary actions on the red/gold storefront panels. */
+.spider-about-emblem > span,
+.spider-about-emblem > small { color: #ffe0a1 !important; }
+.spider-about-emblem > b { color: #fffaf0 !important; }
+.spider-home-contact-actions a,
+.spider-home-contact-actions button { color: #f4d28d !important; }
+.spider-support-cards > a,
+.spider-support-cards > button { color: #fff4e2 !important; }
+.spider-view-products button { color: #f4d28d !important; }
+.spider-empty,
+.spider-no-reviews { color: #eee2d1 !important; }
+.spider-no-reviews b { color: #fffaf0 !important; }
+.spider-no-reviews span { color: #e4d5c1 !important; }
+
+/* Owner dashboard product/branch cards are dark panels: prevent dark text leaking onto them. */
+.site .manage-card,
+.site .manage-card-body { color: #f5efe2 !important; }
+.site .manage-card-body > b { color: #fff8ea !important; }
+.site .manage-card-body > span { color: #f0e5d3 !important; }
+.site .manage-card-body > small { color: #d7cbb9 !important; }
+.site .manage-card-body > a { color: #f0c878 !important; }
+.site .manage-card .danger-outline { color: #ffc0ae !important; border-color: #b87569 !important; }
+
+/* Dark admin forms keep light labels and helper copy; editable fields stay light with dark text. */
+.site .admin-form { color: #f5efe2 !important; }
+.site .admin-form h3 { color: #fff8ea !important; }
+.site .admin-form p,
+.site .admin-form small,
+.site .admin-form .fine-print { color: #d7cbb9 !important; }
+.site .admin-form label { color: #fff2df !important; }
+.site .admin-form input:not([type="checkbox"]),
+.site .admin-form textarea,
+.site .admin-form select { color: #171217 !important; background: #fffdf9 !important; }
+
+/* Review-entry forms are dark panels; their labels and helper text need the same light treatment. */
+.site .review-form { color: #f5efe2 !important; }
+.site .review-form > label,
+.site .review-stars legend,
+.site .review-image-input { color: #fff2df !important; }
+.site .review-form-bottom,
+.site .review-stars span,
+.site .review-image-input small { color: #d7cbb9 !important; }
+.site .review-form input:not([type="file"]),
+.site .review-form textarea { color: #171217 !important; background: #fffdf9 !important; }
+.site .review-card p { color: #eee2d1 !important; }
+.site .review-card > b { color: #fff8ea !important; }
+
+/* The individual admin review entries intentionally remain light cards, so use dark text there. */
+.site .review-admin-item { color: #24191e !important; }
+.site .review-admin-item p,
+.site .review-admin-item b { color: #24191e !important; }
+.site .review-admin-item-heading small { color: #655960 !important; }
+
+/* Error and empty-state copy must remain readable on the navy background. */
+.site .customer-history-error { color: #ffaaa3 !important; }
+.site .empty { color: #e5d7c4 !important; }
+.site .empty h2 { color: #fff8ea !important; }
