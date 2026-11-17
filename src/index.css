@@ -305,7 +305,7 @@
 
 
 /* Spidy Sells — red/black spider-hero storefront */
-:root{font-family:'DM Sans',sans-serif;color:#f5f1f3;background:#09090d;--cream:#09090d;--brown:#f4edf0;--gold:#ff334f;--muted:#b5aab1;--line:#46222e;color-scheme:dark}
+:root{font-family:'DM Sans',sans-serif;color:#f5f1f3;background:#09090d;--cream:#09090d;--brown:#171217;--gold:#ff334f;--muted:#b5aab1;--line:#46222e;color-scheme:dark}
 html{scroll-behavior:smooth;scroll-padding-top:120px}body,.site{background:#09090d;color:#f5f1f3}.site{position:relative;isolation:isolate;overflow:clip}.site:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.12;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 240'%3E%3Cg fill='none' stroke='%23f02c48' stroke-width='1'%3E%3Cpath d='M120 0V240M0 120H240M35 35L205 205M205 35L35 205M120 0Q100 60 120 120Q140 180 120 240M0 120Q60 100 120 120Q180 140 240 120M35 35Q120 60 205 35M35 205Q120 180 205 205'/%3E%3C/g%3E%3C/svg%3E") repeat;background-size:240px}
 .header{position:relative;z-index:40;background:#09090df5;border-bottom:1px solid #762033;color:#fff}.header-motto .motto-line{color:#f7f1f3}.motto-eyebrow{color:#ff6579}.motto-rule{background:#a72b40}
 .header-social-link{background:#171218;border-color:#762338;color:#ff6c80}.header-social-link:hover{background:#e31e3b;color:#fff}.contact-trigger{background:#171218;border-color:#81283c;color:#fff}.contact-trigger>svg:first-child{color:#ff6278}.contact-trigger:hover,.contact-trigger-open{background:#3a111d;border-color:#ff405b}
@@ -410,3 +410,69 @@ html{scroll-behavior:smooth;scroll-padding-top:120px}body,.site{background:#0909
 .spider-branch-hours-line{display:flex;align-items:flex-start;gap:9px;margin:12px 0 0 40px;color:#f1e7ec;font-size:11px;font-weight:700;line-height:1.65}
 .spider-branch-hours-line svg{flex:0 0 16px;margin-top:1px;color:#ff637b}
 @media(max-width:650px){.spider-branch-hours{grid-template-columns:1fr;gap:10px;margin:0 0 22px}.spider-branch-hours-card{padding:15px}.spider-branch-label{font-size:17px}}
+
+
+/* GLOBAL SPIDY THEME CONTRAST PASS — readable text on every light surface */
+.site{color:#f5f1f3}
+
+/* Editable fields use a light field with dark text everywhere, regardless of their form container. */
+.site input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=submit]):not([type=button]):not([type=hidden]),
+.site textarea,
+.site select{
+  color:#171217!important;
+  -webkit-text-fill-color:#171217!important;
+  background-color:#fffdf9!important;
+  border-color:#a998a0!important;
+  caret-color:#171217!important;
+}
+.site input::placeholder,
+.site textarea::placeholder{color:#655960!important;-webkit-text-fill-color:#655960!important;opacity:1}
+.site select option{background:#fffdf9!important;color:#171217!important}
+.site input:disabled,.site textarea:disabled,.site select:disabled{color:#655960!important;-webkit-text-fill-color:#655960!important;opacity:.72}
+
+/* Light cards, reporting surfaces and data tables always use dark foregrounds. */
+.site .stats-grid>div,
+.site .stats-grid>div *{color:#171217}
+.site .stats-grid>div small{color:#655960!important}
+.site .table-wrap,
+.site .table-wrap table,
+.site .table-wrap td,
+.site .table-wrap td b,
+.site .table-wrap td span,
+.site .table-wrap td a{color:#171217!important}
+.site .table-wrap th{color:#655960!important}
+.site .table-wrap td small{color:#655960!important}
+.site .table-wrap select,
+.site .table-wrap select option{color:#171217!important;-webkit-text-fill-color:#171217!important;background:#fffdf9!important}
+.site .branch-stock-management{color:#171217!important}
+.site .branch-stock-label>b,
+.site .branch-stock-label b{color:#171217!important}
+.site .branch-stock-label small{color:#655960!important}
+.site .setup-card{color:#51464b!important}
+.site .setup-card p,.site .setup-card li{color:#655960!important}
+.site .customer-history-empty{color:#171217!important}
+.site .customer-history-empty p{color:#655960!important}
+.site .home-active-order{color:#171217!important}
+.site .home-active-order small{color:#655960!important}
+
+/* Preserve bright text on dark spider-themed panels and navigation. */
+.site .header .brand,.site .header .footer-brand,.site .footer .footer-brand{color:#fff!important}
+.site .header .owner{color:#fff!important}
+.site .breadcrumbs a:hover,.site .breadcrumbs button:hover,
+.site .breadcrumbs [aria-current="page"] span{color:#fff!important}
+.site .customer-order-history .customer-history-form label{color:#f5f1f3!important}
+.site .customer-orders-page .customer-history-results-heading h2{color:#fff!important}
+.site .customer-orders-page .customer-history-results-heading>span{color:#c7b9c0!important}
+.site .payment-title{color:#fff!important}
+.site .selected-branch-summary{color:#fff!important}
+.site .branch-map-card .branch-map-heading b,
+.site .branch-map-card .branch-map-heading a{color:#fff!important}
+.site .summary .sumline{color:#d8cbd1!important}
+.site .summary .sumline.sum-total{color:#fff!important}
+.site .summary small{color:#c0b2b9!important}
+.site .empty h2{color:#fff!important}
+.site .footer-nav a:hover{color:#fff!important}
+.site .admin-form label{color:#f5f1f3!important}
+.site .admin-form input:not([type=checkbox]),
+.site .admin-form textarea,
+.site .admin-form select{color:#171217!important;-webkit-text-fill-color:#171217!important;background:#fffdf9!important}
