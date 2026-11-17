@@ -648,3 +648,231 @@ html{scroll-behavior:smooth;scroll-padding-top:120px}body,.site{background:#0909
   outline: 3px solid #ff9aaa !important;
   outline-offset: 3px !important;
 }
+
+
+/* PREMIUM WHITE CANVAS — keep the established dark Spidy cards and red accents */
+:root {
+  color-scheme: light;
+  background: #faf9f7;
+  --cream: #faf9f7;
+  --brown: #24191e;
+  --muted: #6c6065;
+  --line: #e8e0dc;
+}
+html, body {
+  background: #faf9f7 !important;
+  color: #24191e !important;
+}
+body, .site {
+  background: #faf9f7 !important;
+  color: #24191e !important;
+}
+.site:before { display: none !important; }
+
+/* Clean, premium white header and navigation. */
+.header {
+  background: #fffdfa !important;
+  color: #24191e !important;
+  border-bottom: 1px solid #eadde0 !important;
+}
+.header .brand { color: #24191e !important; }
+.header-motto {
+  border-top-color: #d8bfc5 !important;
+  border-bottom-color: #d8bfc5 !important;
+  background: linear-gradient(90deg, transparent 0%, #fffdfa 15%, #fffdfa 85%, transparent 100%) !important;
+}
+.header-motto .motto-line {
+  color: #302229 !important;
+  font-size: clamp(11px, 1.15vw, 15px) !important;
+  font-weight: 600 !important;
+  line-height: 1.4 !important;
+  white-space: normal !important;
+}
+.header-motto .motto-line em {
+  color: #a91e3b !important;
+  font-weight: 700 !important;
+}
+.header-motto .motto-eyebrow {
+  color: #76283d !important;
+  font-size: 9px !important;
+  font-weight: 800 !important;
+  letter-spacing: 1.8px !important;
+}
+.header-motto .motto-rule { background: #a91e3b !important; }
+.header-motto .motto-star {
+  background: #fffdfa !important;
+  color: #a91e3b !important;
+}
+.store-nav {
+  background: #fffdfa !important;
+  border-bottom: 1px solid #eadde0 !important;
+}
+.store-nav a, .store-nav button {
+  color: #43343a !important;
+}
+.store-nav a:hover, .store-nav button:hover { color: #b51e3e !important; }
+
+/* Social logos retain their real brand colours in every state and theme. */
+.header-socials { display: flex !important; align-items: center; gap: 7px; }
+.header-social-link {
+  background: #fff !important;
+  border: 1px solid #eee5e5 !important;
+  color: inherit !important;
+  box-shadow: 0 2px 8px #2c17200a;
+}
+.header-social-link svg { width: 20px !important; height: 20px !important; }
+.header-social-link.instagram-link:hover,
+.header-social-link.facebook-link:hover,
+.header-social-link.whatsapp-link:hover {
+  background: #fff !important;
+  border-color: #d8c8cc !important;
+  transform: translateY(-2px);
+}
+.header-social-link.instagram-link svg,
+.footer-social-icon.instagram-link svg { overflow: visible; }
+.header-social-link.facebook-link svg path,
+.footer-social-icon.facebook-link svg path { fill: #1877f2 !important; }
+.header-social-link.whatsapp-link svg circle,
+.footer-social-icon.whatsapp-link svg circle { fill: #25d366 !important; }
+.header-social-link.whatsapp-link svg path,
+.footer-social-icon.whatsapp-link svg path { fill: #fff !important; }
+.header-right { gap: 10px !important; }
+.bag {
+  background: #df1b38 !important;
+  border-color: #ff5268 !important;
+  color: #fff !important;
+}
+
+/* Only the page canvas changes to white; the Spider-themed cards remain untouched. */
+.spider-home, .store-inner-page {
+  color: #24191e !important;
+}
+.spider-section-title h2,
+.spider-home .spider-section-title h2 {
+  color: #24191e !important;
+}
+.spider-section-title p,
+.spider-home .spider-section-title p {
+  color: #65585e !important;
+}
+.spider-text-link { color: #a91e3b !important; }
+.spider-home .spider-text-link:hover { color: #e01b3a !important; }
+
+/* Standalone page headings and copy now sit legibly on the white canvas. */
+.site .content > h1,
+.site .content > .lead,
+.site .content > .fine-print,
+.site .store-inner-page > h1,
+.site .store-inner-page > .lead,
+.site .admin-page .admin-heading h1 {
+  color: #24191e !important;
+}
+.site .content > h1 em,
+.site .store-inner-page > h1 em,
+.site .admin-page .admin-heading h1 em {
+  color: #b51e3e !important;
+}
+.site .content > .kicker,
+.site .store-inner-page > .kicker {
+  color: #a91e3b !important;
+}
+.site .content > .back,
+.site .store-inner-page > .back {
+  color: #64565d !important;
+}
+.site .content > .back:hover,
+.site .store-inner-page > .back:hover { color: #a91e3b !important; }
+.site .section-heading h2 { color: #24191e !important; }
+.site .admin-tabs button { color: #65575d !important; }
+.site .admin-tabs button.selected { color: #a91e3b !important; }
+.site .spider-cart-page { color: #24191e !important; }
+.site .spider-cart-page > h1 { color: #24191e !important; }
+.site .spider-cart-page > h1 em { color: #b51e3e !important; }
+.site .spider-cart-page .total,
+.site .spider-cart-page .total span,
+.site .spider-cart-page .total b { color: #24191e !important; }
+
+/* Product photography: show more of the tiramisu and lift the crop slightly. */
+.spider-product-photo { height: 250px !important; }
+.spider-product-photo img {
+  object-position: center 60% !important;
+  transform: translateY(-6px) scale(1.04);
+}
+.spider-product-card:hover .spider-product-photo img {
+  transform: translateY(-6px) scale(1.08);
+}
+@media(max-width:650px) {
+  .spider-product-photo { height: 260px !important; }
+}
+
+/* Responsive header: three compact social buttons always fit beside the bag. */
+@media(max-width:760px) {
+  .header {
+    grid-template-columns: auto minmax(90px, 1fr) auto !important;
+    gap: 8px !important;
+    padding: 8px 12px !important;
+    min-height: 68px !important;
+  }
+  .header-motto { min-width: 0; padding: 6px 8px !important; }
+  .header-motto .motto-eyebrow { font-size: 7px !important; letter-spacing: 1.1px !important; }
+  .header-motto .motto-line { font-size: clamp(9px, 2vw, 12px) !important; }
+  .header-right { gap: 5px !important; }
+  .header-socials { gap: 4px !important; }
+  .header-social-link { width: 28px !important; height: 28px !important; }
+  .header-social-link svg { width: 18px !important; height: 18px !important; }
+}
+@media(max-width:420px) {
+  .header {
+    grid-template-columns: 35px minmax(78px, 1fr) auto !important;
+    gap: 5px !important;
+    padding: 7px 8px !important;
+  }
+  .brand-logo { width: 35px !important; height: 35px !important; }
+  .header-motto { padding: 5px 4px !important; }
+  .header-motto .motto-eyebrow { font-size: 6px !important; letter-spacing: .8px !important; }
+  .header-motto .motto-line { font-size: 9px !important; }
+  .header-right { gap: 4px !important; }
+  .header-socials { gap: 3px !important; }
+  .header-social-link { width: 25px !important; height: 25px !important; }
+  .header-social-link svg { width: 16px !important; height: 16px !important; }
+  .bag { gap: 4px !important; padding: 6px 6px !important; font-size: 9px !important; }
+  .bag svg { width: 13px !important; height: 13px !important; }
+  .bag i { width: 16px !important; height: 16px !important; font-size: 9px !important; }
+}
+
+/* Premium white footer canvas with original-colour brand marks. */
+.footer {
+  background: #fffdfa !important;
+  border-top: 1px solid #eadde0 !important;
+  color: #302229 !important;
+}
+.footer p, .footer .copyright { color: #74686d !important; }
+.footer-nav a { color: #55434a !important; }
+.footer-nav a:hover { color: #b51e3e !important; }
+.footer-socials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+.footer-social-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid #eee5e5;
+  border-radius: 50%;
+  background: #fff;
+  text-decoration: none;
+}
+.footer-social-icon svg { width: 19px; height: 19px; display: block; }
+.footer-phone-link {
+  color: #55434a !important;
+  font-size: 10px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.footer-phone-link:hover { color: #b51e3e !important; }
+@media(prefers-reduced-motion:reduce) {
+  .header-social-link { transition: none !important; }
+}
