@@ -1145,3 +1145,95 @@ html, body, body .site {
 .header-social-link.whatsapp-link:hover {
   background: #fdfbf5 !important;
 }
+
+
+/* DEEP NAVY PAGE CANVAS — preserve the existing gold/red cards and hero */
+:root {
+  color-scheme: dark;
+  background: #081629;
+  --cream: #081629;
+}
+html, body, body .site,
+body .site .site-content {
+  background: #081629 !important;
+  color: #f4f0e7 !important;
+}
+.site {
+  background: #081629 !important;
+  color: #f4f0e7 !important;
+}
+
+/* Coordinated navy header, navigation and footer. */
+.header, .store-nav, .footer {
+  background: #0b1d34 !important;
+  border-color: #263d5b !important;
+  color: #f4f0e7 !important;
+}
+.header .brand { color: #fff7e8 !important; }
+.header-motto,
+.header-motto .motto-star {
+  background-color: #0b1d34 !important;
+}
+.header-motto {
+  border-top-color: #b28b48 !important;
+  border-bottom-color: #b28b48 !important;
+}
+.header-motto .motto-line { color: #fff6e7 !important; }
+.header-motto .motto-line em { color: #e0bd76 !important; }
+.header-motto .motto-eyebrow { color: #e0bd76 !important; }
+.header-motto .motto-rule { background: #c59a50 !important; }
+.store-nav a, .store-nav button { color: #e9e5dc !important; }
+.store-nav a:hover, .store-nav button:hover { color: #e4bd70 !important; }
+.footer { color: #f5f0e4 !important; }
+.footer p, .footer .copyright { color: #c3cad5 !important; }
+.footer-nav a { color: #f0dfba !important; }
+.footer-nav a:hover { color: #e5bd70 !important; }
+.footer-phone-link { color: #e6eaf1 !important; }
+
+/* Legible copy on the navy canvas. The card-specific palette is untouched. */
+.spider-home, .store-inner-page { color: #f5f0e4 !important; }
+.spider-section-title h2,
+.spider-home .spider-section-title h2 { color: #fff8eb !important; }
+.spider-section-title p,
+.spider-home .spider-section-title p { color: #d4d9e2 !important; }
+.spider-home .spider-text-link { color: #e5c27d !important; }
+.site .content > h1,
+.site .store-inner-page > h1,
+.site .admin-page .admin-heading h1,
+.site .spider-cart-page > h1 {
+  color: #fff7e8 !important;
+}
+.site .content > h1 em,
+.site .store-inner-page > h1 em,
+.site .admin-page .admin-heading h1 em,
+.site .spider-cart-page > h1 em {
+  color: #e2b86b !important;
+}
+.site .content > .lead,
+.site .content > .fine-print,
+.site .store-inner-page > .lead {
+  color: #d1d8e3 !important;
+}
+.site .content > .kicker,
+.site .store-inner-page > .kicker { color: #e1bb70 !important; }
+.site .content > .back,
+.site .store-inner-page > .back { color: #dce2ec !important; }
+.site .content > .back:hover,
+.site .store-inner-page > .back:hover { color: #f2c978 !important; }
+.site .section-heading h2 { color: #fff7e8 !important; }
+.site .admin-tabs button { color: #d7deea !important; }
+.site .admin-tabs button.selected { color: #f1ca7b !important; }
+.site .spider-cart-page .total,
+.site .spider-cart-page .total span,
+.site .spider-cart-page .total b { color: #fff6e7 !important; }
+
+/* Keep Instagram, Facebook and WhatsApp logos in their original colours. */
+.header-social-link, .footer-social-icon {
+  background: #fdfbf5 !important;
+  border-color: #c7b68f !important;
+}
+.header-social-link.instagram-link:hover,
+.header-social-link.facebook-link:hover,
+.header-social-link.whatsapp-link:hover {
+  background: #fdfbf5 !important;
+}
