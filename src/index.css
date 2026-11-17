@@ -1043,3 +1043,13 @@ html, body, body .site {
     font-weight: 800 !important;
   }
 }
+
+
+/* HERO CARD ONLY — premium antique-gold and Spidy-red background.
+   Preserve the existing hero structure, web overlay, image frame and layout. */
+.spider-hero {
+  background:
+    radial-gradient(ellipse at 78% 28%, rgba(190, 139, 69, .82) 0%, rgba(150, 72, 55, .48) 34%, transparent 67%),
+    linear-gradient(118deg, #59402f 0%, #7b2937 48%, #351321 100%) !important;
+  border-color: #bd914d !important;
+}
