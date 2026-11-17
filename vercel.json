@@ -1,12 +1,49 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
-    { "source": "/order-type", "destination": "/order-type.html" },
-    { "source": "/menu", "destination": "/menu.html" },
-    { "source": "/bag", "destination": "/bag.html" },
-    { "source": "/checkout", "destination": "/checkout.html" },
-    { "source": "/order-confirmation", "destination": "/order-confirmation.html" },
-    { "source": "/orders", "destination": "/orders.html" },
-    { "source": "/admin", "destination": "/admin.html" }
+    {
+      "source": "/about",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/contact",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/reviews",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/products",
+      "destination": "/menu.html"
+    },
+    {
+      "source": "/order-type",
+      "destination": "/order-type.html"
+    },
+    {
+      "source": "/menu",
+      "destination": "/menu.html"
+    },
+    {
+      "source": "/bag",
+      "destination": "/bag.html"
+    },
+    {
+      "source": "/checkout",
+      "destination": "/checkout.html"
+    },
+    {
+      "source": "/order-confirmation",
+      "destination": "/order-confirmation.html"
+    },
+    {
+      "source": "/orders",
+      "destination": "/orders.html"
+    },
+    {
+      "source": "/admin",
+      "destination": "/admin.html"
+    }
   ]
 }
