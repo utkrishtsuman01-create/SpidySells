@@ -476,3 +476,6 @@ html{scroll-behavior:smooth;scroll-padding-top:120px}body,.site{background:#0909
 .site .admin-form input:not([type=checkbox]),
 .site .admin-form textarea,
 .site .admin-form select{color:#171217!important;-webkit-text-fill-color:#171217!important;background:#fffdf9!important}
+
+/* Active admin tab remains bright against the dark dashboard */
+.site .admin-tabs button.selected{color:#fff!important}
