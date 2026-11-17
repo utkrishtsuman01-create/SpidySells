@@ -1237,3 +1237,94 @@ body .site .site-content {
 .header-social-link.whatsapp-link:hover {
   background: #fdfbf5 !important;
 }
+
+
+/* NAVY + ANTIQUE GOLD CANVAS — a restrained premium blend, not flat navy */
+:root {
+  color-scheme: dark;
+  background: #0a172b;
+  --cream: #0a172b;
+}
+html, body, body .site, body .site .site-content {
+  background:
+    radial-gradient(ellipse at 14% 0%, rgba(175, 132, 58, .22) 0%, rgba(175, 132, 58, 0) 38%),
+    radial-gradient(ellipse at 88% 100%, rgba(144, 102, 42, .16) 0%, rgba(144, 102, 42, 0) 42%),
+    linear-gradient(135deg, #101f35 0%, #09172b 52%, #172238 100%) !important;
+  color: #f5efe2 !important;
+}
+.site {
+  background: transparent !important;
+  color: #f5efe2 !important;
+}
+
+/* Header, navigation and footer echo the navy/gold page canvas. */
+.header, .store-nav, .footer {
+  background: linear-gradient(110deg, #18263a 0%, #0d1b30 58%, #332b25 100%) !important;
+  border-color: #9d793f !important;
+  color: #f5efe2 !important;
+}
+.header .brand { color: #fff7e8 !important; }
+.header-motto, .header-motto .motto-star {
+  background-color: #142239 !important;
+}
+.header-motto {
+  border-top-color: #c29a53 !important;
+  border-bottom-color: #c29a53 !important;
+}
+.header-motto .motto-line { color: #fff6e7 !important; }
+.header-motto .motto-line em { color: #e6c47e !important; }
+.header-motto .motto-eyebrow { color: #e6c47e !important; }
+.header-motto .motto-rule { background: #c59a50 !important; }
+.store-nav a, .store-nav button { color: #f0e7d6 !important; }
+.store-nav a:hover, .store-nav button:hover { color: #f1cc83 !important; }
+.footer { color: #f5f0e4 !important; }
+.footer p, .footer .copyright { color: #d0c5af !important; }
+.footer-nav a { color: #f0dfba !important; }
+.footer-nav a:hover { color: #f1ca7b !important; }
+.footer-phone-link { color: #eee2ca !important; }
+
+/* Readable type on the dark blended canvas. Existing cards retain their own colours. */
+.spider-home, .store-inner-page { color: #f5f0e4 !important; }
+.spider-section-title h2,
+.spider-home .spider-section-title h2 { color: #fff8eb !important; }
+.spider-section-title p,
+.spider-home .spider-section-title p { color: #d7d2c7 !important; }
+.spider-home .spider-text-link { color: #ebc878 !important; }
+.site .content > h1,
+.site .store-inner-page > h1,
+.site .admin-page .admin-heading h1,
+.site .spider-cart-page > h1 {
+  color: #fff7e8 !important;
+}
+.site .content > h1 em,
+.site .store-inner-page > h1 em,
+.site .admin-page .admin-heading h1 em,
+.site .spider-cart-page > h1 em {
+  color: #e6bd70 !important;
+}
+.site .content > .lead,
+.site .content > .fine-print,
+.site .store-inner-page > .lead { color: #d2ccbf !important; }
+.site .content > .kicker,
+.site .store-inner-page > .kicker { color: #e5c17a !important; }
+.site .content > .back,
+.site .store-inner-page > .back { color: #e1d9ca !important; }
+.site .content > .back:hover,
+.site .store-inner-page > .back:hover { color: #f2ce88 !important; }
+.site .section-heading h2 { color: #fff7e8 !important; }
+.site .admin-tabs button { color: #d9d4c9 !important; }
+.site .admin-tabs button.selected { color: #f1ca7b !important; }
+.site .spider-cart-page .total,
+.site .spider-cart-page .total span,
+.site .spider-cart-page .total b { color: #fff6e7 !important; }
+
+/* Keep original platform colours of Instagram, Facebook and WhatsApp. */
+.header-social-link, .footer-social-icon {
+  background: #fdfbf5 !important;
+  border-color: #c7b68f !important;
+}
+.header-social-link.instagram-link:hover,
+.header-social-link.facebook-link:hover,
+.header-social-link.whatsapp-link:hover {
+  background: #fdfbf5 !important;
+}
