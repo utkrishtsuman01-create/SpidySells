@@ -1420,3 +1420,109 @@ html, body, body .site, body .site .site-content {
 .site .customer-history-error { color: #ffaaa3 !important; }
 .site .empty { color: #e5d7c4 !important; }
 .site .empty h2 { color: #fff8ea !important; }
+
+
+/* READABILITY PASS 2 — fix the actual select text-fill override and improve small copy on mobile. */
+
+/* Product size selector: global form text-fill was making dark options render with dark lettering. */
+.site .spider-size-picker,
+.site .spider-size-picker select,
+.site .spider-size-picker select option {
+  color: #fffaf0 !important;
+  -webkit-text-fill-color: #fffaf0 !important;
+}
+.site .spider-size-picker select {
+  appearance: auto !important;
+  background-color: #351522 !important;
+  border: 1px solid #e0b96d !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  line-height: 1.4 !important;
+  min-height: 40px !important;
+  padding: 10px 12px !important;
+}
+.site .spider-size-picker select option {
+  background-color: #351522 !important;
+  color: #fffaf0 !important;
+  -webkit-text-fill-color: #fffaf0 !important;
+}
+
+/* Regular paragraph copy: readable minimum size on every storefront and content page. */
+.site .spider-home p,
+.site .store-inner-page p,
+.site .content p {
+  font-size: max(13px, 1em) !important;
+  line-height: 1.6 !important;
+}
+.site .spider-home small,
+.site .store-inner-page small,
+.site .content small {
+  font-size: max(11.5px, 1em) !important;
+  line-height: 1.5 !important;
+}
+
+/* Raise tiny labels and supporting information without changing the page layout. */
+.site .spider-kicker { font-size: 11px !important; letter-spacing: 1.5px !important; }
+.site .spider-hero-meta { font-size: 11.5px !important; line-height: 1.5 !important; }
+.site .spider-product-photo > span { font-size: 11px !important; }
+.site .spider-product-heading > b { font-size: 14px !important; }
+.site .spider-product-info > p { font-size: 13px !important; line-height: 1.55 !important; }
+.site .spider-size-picker { font-size: 12px !important; line-height: 1.5 !important; }
+.site .spider-stock { font-size: 11.5px !important; line-height: 1.45 !important; }
+.site .spider-branch-label { font-size: 14px !important; }
+.site .spider-branch-open { font-size: 11px !important; letter-spacing: .7px !important; }
+.site .spider-branch-address,
+.site .spider-branch-hours-line { font-size: 12.5px !important; line-height: 1.55 !important; }
+.site .spider-why-grid article > b { font-size: 12px !important; }
+.site .spider-why-grid h3 { font-size: 15px !important; }
+.site .spider-why-grid p { font-size: 12.5px !important; line-height: 1.55 !important; }
+.site .spider-bulk-stats b { font-size: 16px !important; }
+.site .spider-bulk-stats small { font-size: 11.5px !important; }
+.site .spider-review-card p { font-size: 13px !important; line-height: 1.6 !important; }
+.site .spider-review-card small { font-size: 11.5px !important; }
+.site .spider-support-cards span,
+.site .spider-contact-branches p,
+.site .spider-contact-branches span,
+.site .spider-other-location p { font-size: 12.5px !important; line-height: 1.55 !important; }
+.site .spider-support-cards strong,
+.site .spider-contact-branches small { font-size: 11.5px !important; }
+.site .spider-home-contact-actions a,
+.site .spider-home-contact-actions button { font-size: 12px !important; }
+.site .spider-text-link { font-size: 11.5px !important; }
+.site .store-nav a,
+.site .store-nav button { font-size: 11px !important; }
+
+/* Use a brighter ivory for normal reading copy on the red/gold and navy surfaces. */
+.site .spider-product-info > p,
+.site .spider-why-grid p,
+.site .spider-bulk-copy > p,
+.site .spider-about-section > div:last-child > p,
+.site .spider-about-story p,
+.site .spider-home-contact p,
+.site .spider-review-card p,
+.site .spider-support-cards span,
+.site .spider-contact-branches p,
+.site .spider-contact-branches span,
+.site .spider-other-location p,
+.site .spider-branch-address,
+.site .spider-branch-hours-line,
+.site .spider-hero-copy > p {
+  color: #fff4e5 !important;
+}
+
+/* Home order tracker and checkout form copy should not become microtext. */
+.site .spider-order-history-home p,
+.site .customer-order-history p,
+.site .customer-history-form label,
+.site .customer-history-message,
+.site .customer-history-loading,
+.site .order-confirmation p,
+.site .order-confirmation > small {
+  font-size: max(12.5px, 1em) !important;
+  line-height: 1.6 !important;
+}
+.site .customer-history-form input,
+.site .customer-history-form button,
+.site .form input,
+.site .form textarea,
+.site .form select { font-size: 13px !important; }
